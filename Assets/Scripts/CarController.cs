@@ -5,71 +5,112 @@ using UnityEngine.InputSystem;
 
 public class CarController : MonoBehaviour
 {
+    [SerializeField] private int maxHealth;
+    private HealthSystem healthSystem;
     public Rigidbody playerRb;
-    public List<AxleInfo> axleInfos; // the information about each individual axle
-    public float maxMotorTorque; // maximum torque the motor can apply to wheel
-    public float maxSteeringAngle; // maximum steer angle the wheel can have
-    private float brakeInput;
-    public float maxBrakeTorque;
+    public WheelColliders wheelColliders;
+    public WheelVisual wheelVisual;
+    public float maxMotorTorque;
+    public float maxSteeringAngle;
+    public float maxBrakeTorque_F;
+    public float maxBrakeTorque_B;
+    private float brakeInput;   
     private Vector2 _movementInput;
-    public float fuerza;
+
+    [SerializeField] private Vector2 centerOfMass_OffSet;
+
+    private Weapon weapon;
+    //public float fuerzaDown = 0;
     private void Start()
     {
         playerRb = GetComponent<Rigidbody>();
+        weapon = GetComponentInChildren<Weapon>();
+        playerRb.centerOfMass = new Vector3(playerRb.centerOfMass.x, centerOfMass_OffSet.y, centerOfMass_OffSet.x);
+
+        healthSystem = GetComponent<HealthSystem>();
+        healthSystem.MaxHealth = maxHealth;
     }
 
     private void Update()
     {
-        Debug.Log(brakeInput);
+        //playerRb.centerOfMass = new Vector3(playerRb.centerOfMass.x, centerOfMass_OffSet.y, centerOfMass_OffSet.x);
 
+        //Debug.Log("Vel: " + playerRb.velocity.magnitude + "  RPM: " + wheelColliders.BRWheel.rpm + " Brake: " + wheelColliders.BRWheel.brakeTorque);
+
+    }
+    //private void OnFire()
+    //{
+    //    weapon.Fire();
+    //}
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.TransformPoint(playerRb.centerOfMass), 0.05f);
     }
     public void FixedUpdate()
     {
-        float motor = maxMotorTorque * _movementInput.y;
-        float steering = maxSteeringAngle * _movementInput.x;
+        Motor();
+        Steering();
+        ApplyBrake();
+        ApplyWheelPositions();
 
-        foreach (AxleInfo axleInfo in axleInfos)
-        {
-            if (axleInfo.steering)
-            {
-                axleInfo.leftWheel.steerAngle = steering;
-                axleInfo.rightWheel.steerAngle = steering;
-            }
-            if (axleInfo.motor)
-            {
-                axleInfo.leftWheel.motorTorque = motor;
-                axleInfo.rightWheel.motorTorque = motor;
-            }
-        }
-        playerRb.AddRelativeForce(Vector3.down * fuerza, ForceMode.Force);
+        //playerRb.AddRelativeForce(Vector3.down * fuerzaDown, ForceMode.Force);
     }
+
+
 
     private void OnMove(InputValue inputValue)
     {
-        _movementInput = inputValue.Get<Vector2>(); 
+        _movementInput = inputValue.Get<Vector2>();
+    }
+
+    private void Motor()
+    {
+        wheelColliders.BLWheel.motorTorque = maxMotorTorque * _movementInput.y;
+        wheelColliders.BRWheel.motorTorque = maxMotorTorque * _movementInput.y;
+
+    }
+
+    private void Steering()
+    {
+        wheelColliders.FLWheel.steerAngle = maxSteeringAngle * _movementInput.x;
+        wheelColliders.FRWheel.steerAngle = maxSteeringAngle * _movementInput.x;
     }
 
     private void OnBrake(InputValue inputValue)
     {
         brakeInput = inputValue.Get<float>();
 
-        foreach (AxleInfo axleInfo in axleInfos)
-        {
-            if (axleInfo.motor)
-            {
-                axleInfo.leftWheel.brakeTorque = brakeInput * maxBrakeTorque;
-                axleInfo.rightWheel.brakeTorque = brakeInput * maxBrakeTorque;
-            }
-
-            if (axleInfo.steering)
-            {
-                axleInfo.leftWheel.brakeTorque = brakeInput * maxBrakeTorque;
-                axleInfo.rightWheel.brakeTorque = brakeInput * maxBrakeTorque;
-            }
-        }
     }
 
+    private void ApplyBrake()
+    {
+        wheelColliders.BLWheel.brakeTorque = brakeInput * maxBrakeTorque_B;
+        wheelColliders.BRWheel.brakeTorque = brakeInput * maxBrakeTorque_B;
+        wheelColliders.FLWheel.brakeTorque = brakeInput * maxBrakeTorque_F;
+        wheelColliders.FRWheel.brakeTorque = brakeInput * maxBrakeTorque_F;
+    }
 
+    private void ApplyWheelPositions()
+    {
+        UpdateWheel(wheelColliders.FLWheel, wheelVisual.FLWheelVisual);
+        UpdateWheel(wheelColliders.FRWheel, wheelVisual.FRWheelVisual);
+        UpdateWheel(wheelColliders.BLWheel, wheelVisual.BLWheelVisual);
+        UpdateWheel(wheelColliders.BRWheel, wheelVisual.BRWheelVisual);
+    }
+
+    private void UpdateWheel(WheelCollider wCollider, GameObject wGameObject)
+    {
+        Quaternion rotation;
+        Vector3 position;
+
+        wCollider.GetWorldPose(out position, out rotation);
+        wGameObject.transform.position = position;
+        wGameObject.transform.rotation = rotation;
+
+
+    }
 
 
 
@@ -83,12 +124,19 @@ public class CarController : MonoBehaviour
 }
 
 [System.Serializable]
-public class AxleInfo
+public class WheelColliders
 {
-    public WheelCollider leftWheel;
-    public WheelCollider rightWheel;
-    public MeshRenderer meshRenderer_LW;
-    public MeshRenderer meshRenderer_RW;
-    public bool motor; // is this wheel attached to motor?
-    public bool steering; // does this wheel apply steer angle?
+    public WheelCollider FRWheel;
+    public WheelCollider FLWheel;
+    public WheelCollider BRWheel;
+    public WheelCollider BLWheel;
+}
+
+[System.Serializable]
+public class WheelVisual
+{
+    public GameObject FRWheelVisual;
+    public GameObject FLWheelVisual;
+    public GameObject BRWheelVisual;
+    public GameObject BLWheelVisual;
 }
