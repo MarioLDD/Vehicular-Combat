@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -32,6 +33,7 @@ public class Weapon : MonoBehaviour
     //[SerializeField] private float proyectileForce;
     //[SerializeField] private Rigidbody bullet_Rb;
     [SerializeField] private Transform firePoint;
+    [SerializeField] private TMP_Text ammo_Text;
 
 
 
@@ -63,13 +65,16 @@ public class Weapon : MonoBehaviour
             bulletsShot = bulletsPerBurst;
             PerfromShot();
         }
-        Debug.Log(rayHit.collider.gameObject.name);
+
+    }
+    private void Start()
+    {
+        ammo_Text.text = "Munition: " + currentAmmo;
 
     }
     private void StartShot()
     {
         isShooting = true;
-        Debug.Log("algo");
     }
 
     private void EndShot()
@@ -98,6 +103,7 @@ public class Weapon : MonoBehaviour
 
         currentAmmo--;
         bulletsShot--;
+        ammo_Text.text = "Munition: " + currentAmmo;
 
         if (bulletsShot > 0 && currentAmmo > 0)
         {
