@@ -21,7 +21,7 @@ public class UpdateShield : MonoBehaviour, IUpdateHealth
     {
         target = currentHealth / maxHealth;
         target = Mathf.Lerp(1f, 0f, target);
-        material.color = gradient.Evaluate(target);
+        material.SetColor("_Color", gradient.Evaluate(target));
         if (target >= 0.75f)
         {
             float fillValue = Mathf.Lerp(0f, -1f, (target - 0.75f) / 0.25f);

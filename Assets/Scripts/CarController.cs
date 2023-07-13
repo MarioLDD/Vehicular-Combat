@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class CarController : MonoBehaviour
 {
-  //  [SerializeField] private int maxHealth;
+    //  [SerializeField] private int maxHealth;
     private HealthSystem healthSystem;
     public Rigidbody playerRb;
     public WheelColliders wheelColliders;
@@ -14,7 +14,7 @@ public class CarController : MonoBehaviour
     public float maxSteeringAngle;
     public float maxBrakeTorque_F;
     public float maxBrakeTorque_B;
-    private float brakeInput;   
+    private float brakeInput;
     private Vector2 _movementInput;
 
     [SerializeField] private Vector2 centerOfMass_OffSet;
@@ -27,8 +27,8 @@ public class CarController : MonoBehaviour
         weapon = GetComponentInChildren<Weapon>();
         playerRb.centerOfMass = new Vector3(playerRb.centerOfMass.x, centerOfMass_OffSet.y, centerOfMass_OffSet.x);
 
-       // healthSystem = GetComponent<HealthSystem>();
-       // healthSystem.MaxHealth = maxHealth;
+        // healthSystem = GetComponent<HealthSystem>();
+        // healthSystem.MaxHealth = maxHealth;
     }
 
     private void Update()
@@ -36,7 +36,7 @@ public class CarController : MonoBehaviour
         //playerRb.centerOfMass = new Vector3(playerRb.centerOfMass.x, centerOfMass_OffSet.y, centerOfMass_OffSet.x);
 
         //Debug.Log("Vel: " + playerRb.velocity.magnitude + "  RPM: " + wheelColliders.BRWheel.rpm + " Brake: " + wheelColliders.BRWheel.brakeTorque);
-
+        Debug.Log("velocidad: " + (wheelColliders.BLWheel.radius * 2) * Mathf.PI * wheelColliders.BLWheel.rpm);
     }
     //private void OnFire()
     //{
@@ -81,7 +81,6 @@ public class CarController : MonoBehaviour
     private void OnBrake(InputValue inputValue)
     {
         brakeInput = inputValue.Get<float>();
-
     }
 
     private void ApplyBrake()

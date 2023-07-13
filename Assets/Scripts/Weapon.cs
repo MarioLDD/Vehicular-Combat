@@ -19,7 +19,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] private int currentAmmo;
     public int CurrentAmmo { set { currentAmmo = value; } }
 
-    private bool isShooting, readyToShoot;
+    private bool isShooting, readyToShoot, reloading;
 
     [SerializeField] private GameObject bulletHolePrefabs;
     [SerializeField] private float bulletHoleLifeSpan;
