@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 365216120, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3a9820bdd9546e443bd2d46ff034756e, type: 2}
     - target: {fileID: 783809936132821621, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -31,6 +35,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3045694996757571746, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_ShieldMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 3a9820bdd9546e443bd2d46ff034756e, type: 2}
     - target: {fileID: 4949302976478477664, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_Name
       value: CM vcam2
@@ -113,7 +121,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4949302976957969784, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_Name
-      value: Player 2
+      value: Player 2 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 4949302976957969786, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_DefaultControlScheme

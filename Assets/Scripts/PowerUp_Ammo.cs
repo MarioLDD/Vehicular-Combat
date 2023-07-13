@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PowerUp : MonoBehaviour
+public class PowerUp_Ammo: MonoBehaviour
 {
     [SerializeField] private int ammunition = 100;
 
@@ -10,7 +10,7 @@ public class PowerUp : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            other.GetComponentInChildren<Weapon>().CurrentAmmo = ammunition;
+            other.GetComponentInChildren<Weapon>().Addmunitions(ammunition);
             Destroy(gameObject);
         }
     }

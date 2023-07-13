@@ -7,6 +7,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 365216120, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5b6e3cf83fb43d646b19e7610f8007cd, type: 2}
+    - target: {fileID: 3045694996757571746, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_ShieldMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 5b6e3cf83fb43d646b19e7610f8007cd, type: 2}
     - target: {fileID: 4949302976478477664, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_Name
       value: CM vcam4
@@ -69,7 +77,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4949302976957969784, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_Name
-      value: Player 4
+      value: Player 4 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 4949302976958548747, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_Layer
@@ -96,8 +104,20 @@ PrefabInstance:
       value: -12.880001
       objectReference: {fileID: 0}
     - target: {fileID: 8515517142366220838, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99685764
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515517142366220838, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0.079214275
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515517142366220838, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515517142366220838, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8515517142366220839, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_Enabled

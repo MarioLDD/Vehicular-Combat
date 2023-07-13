@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Old_Shield
+  m_Name: Old_Shield 4
   m_Shader: {fileID: -6465566751694194690, guid: 4bc041f581df1db49823001534ed9be8, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -37,7 +37,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _depth: 1
-    - _fill: -0
+    - _fill: 0
     - _fresnel_power: 1
     m_Colors:
     - _Color: {r: 0, g: 0.6156863, b: 1, a: 1}

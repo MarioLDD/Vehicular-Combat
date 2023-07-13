@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Weapon : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] private int currentAmmo;
     public int CurrentAmmo { set { currentAmmo = value; } }
 
-    private bool isShooting, readyToShoot, reloading;
+    private bool isShooting, readyToShoot;
 
     [SerializeField] private GameObject bulletHolePrefabs;
     [SerializeField] private float bulletHoleLifeSpan;
@@ -34,7 +35,8 @@ public class Weapon : MonoBehaviour
     //[SerializeField] private Rigidbody bullet_Rb;
     [SerializeField] private Transform firePoint;
     [SerializeField] private TMP_Text ammo_Text;
-
+    [SerializeField] private Image ammo_Image;
+    [SerializeField] private int bulletDamage = 5;
 
 
     /**
@@ -60,7 +62,7 @@ public class Weapon : MonoBehaviour
 
     void Update()
     {
-        if (isShooting && readyToShoot && !reloading && currentAmmo > 0)
+        if (isShooting && readyToShoot && currentAmmo > 0)
         {
             bulletsShot = bulletsPerBurst;
             PerfromShot();
@@ -90,6 +92,10 @@ public class Weapon : MonoBehaviour
 
         if (Physics.Raycast(firePoint.position, direction, out rayHit, bulletRange))
         {
+            if (rayHit.collider.TryGetComponent(out HealthSystem healthSystem))
+            {
+                healthSystem.TakeDamage(bulletDamage);
+            }
             TrailRenderer trail = Instantiate(bulletTrail, firePoint.position, Quaternion.identity);
             StartCoroutine(SpawnTrail(trail, rayHit.point, rayHit.normal, true));
         }
@@ -104,6 +110,11 @@ public class Weapon : MonoBehaviour
         currentAmmo--;
         bulletsShot--;
         ammo_Text.text = "Munition: " + currentAmmo;
+        if (currentAmmo < 1)
+        {
+            ammo_Image.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+            ammo_Text.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+        }
 
         if (bulletsShot > 0 && currentAmmo > 0)
         {
@@ -118,6 +129,14 @@ public class Weapon : MonoBehaviour
                 EndShot();
             }
         }
+    }
+
+    public void Addmunitions(int addAmmo)
+    {
+        currentAmmo = addAmmo;
+        ammo_Image.color = Color.white;
+        ammo_Text.color = Color.white;
+        ammo_Text.text = "Munition: " + currentAmmo;
     }
     private Vector3 GetDirection()
     {
@@ -136,8 +155,6 @@ public class Weapon : MonoBehaviour
     }
     private IEnumerator SpawnTrail(TrailRenderer Trail, Vector3 HitPoint, Vector3 HitNormal, bool MadeImpact)
     {
-        // This has been updated from the video implementation to fix a commonly raised issue about the bullet trails
-        // moving slowly when hitting something close, and not
         Vector3 startPosition = Trail.transform.position;
         float distance = Vector3.Distance(Trail.transform.position, HitPoint);
         float remainingDistance = distance;
@@ -181,9 +198,11 @@ public class Weapon : MonoBehaviour
     private void ReloadFinish()
     {
         currentAmmo = magazineSize;
+        ammo_Image.color = Color.white;
+        ammo_Text.color = Color.white;
+        ammo_Text.text = "Munition: " + currentAmmo;
         reloading = false;
     }
-
     private void OnEnable()
     {
         //controls.Enable();
@@ -200,10 +219,4 @@ public class Weapon : MonoBehaviour
         player.FindAction("Fire").canceled -= ctx => EndShot();
         player.FindAction("Reload").performed -= ctx => Reload();
     }
-    //public void Fire()
-    //{
-    //    Rigidbody currentBullet = Instantiate(bullet_Rb, firePosition.position, Quaternion.identity);
-    //    currentBullet.AddRelativeForce(firePosition.forward * proyectileForce, ForceMode.Impulse);
-
-    //}
 }

@@ -7,6 +7,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 365216120, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e50de5dc8f1f5a2468d24f6affa5a0d8, type: 2}
+    - target: {fileID: 3045694996757571746, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_ShieldMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: e50de5dc8f1f5a2468d24f6affa5a0d8, type: 2}
     - target: {fileID: 4949302976478477666, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_LocalPosition.y
       value: 4.8899994
@@ -98,6 +106,10 @@ PrefabInstance:
     - target: {fileID: 8515517142366220838, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_LocalPosition.z
       value: -12.880001
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515517142366220838, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99685764
       objectReference: {fileID: 0}
     - target: {fileID: 8515517142366220838, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_LocalRotation.x

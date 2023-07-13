@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class CarController : MonoBehaviour
 {
-    [SerializeField] private int maxHealth;
+  //  [SerializeField] private int maxHealth;
     private HealthSystem healthSystem;
     public Rigidbody playerRb;
     public WheelColliders wheelColliders;
@@ -27,8 +27,8 @@ public class CarController : MonoBehaviour
         weapon = GetComponentInChildren<Weapon>();
         playerRb.centerOfMass = new Vector3(playerRb.centerOfMass.x, centerOfMass_OffSet.y, centerOfMass_OffSet.x);
 
-        healthSystem = GetComponent<HealthSystem>();
-        healthSystem.MaxHealth = maxHealth;
+       // healthSystem = GetComponent<HealthSystem>();
+       // healthSystem.MaxHealth = maxHealth;
     }
 
     private void Update()
@@ -108,17 +108,12 @@ public class CarController : MonoBehaviour
         wCollider.GetWorldPose(out position, out rotation);
         wGameObject.transform.position = position;
         wGameObject.transform.rotation = rotation;
-
-
     }
-
-
-
-
-
-
-
-
+    public void DestroyCar()
+    {
+        Debug.Log("El " + gameObject.name + " ha muerto");
+        Destroy(gameObject);
+    }
 
 
 }
