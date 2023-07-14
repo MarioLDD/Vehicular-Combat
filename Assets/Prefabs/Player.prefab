@@ -1486,7 +1486,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4949302975971194665}
   m_Layer: 0
-  m_Name: FirePoint
+  m_Name: FirePointA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1780,13 +1780,15 @@ MonoBehaviour:
   currentAmmo: 0
   bulletHolePrefabs: {fileID: 7180258392744563345, guid: 8891378331e1cec4d8a51fa993287c22, type: 3}
   bulletHoleLifeSpan: 3
-  muzzleFlash: {fileID: 4434737268283249820}
   EnemyTag: Player
   AddBulletSpread: 1
   BulletSpreadVariance: {x: 0.1, y: 0.1, z: 0.1}
   burstDealy: 0.1
   bulletsPerBurst: 1
-  firePoint: {fileID: 4949302975971194665}
+  firePointA: {fileID: 4949302975971194665}
+  firePointB: {fileID: 4949302977395769797}
+  muzzleFlashA: {fileID: 4434737268283249820}
+  muzzleFlashB: {fileID: 4990094382230501838}
   ammo_Text: {fileID: 8659041019587265334}
   ammo_Image: {fileID: 665242263604869887}
   bulletDamage: 1
@@ -2240,6 +2242,9 @@ MonoBehaviour:
   maxBrakeTorque_F: 2997.57
   maxBrakeTorque_B: 3000
   centerOfMass_OffSet: {x: -0.15, y: -0.4}
+  timeToMaxTorque: 5
+  timeToZeroTorque: 1
+  torque: 0
 --- !u!114 &8815605718105127322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2664,7 +2669,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4949302977395769797}
   m_Layer: 0
-  m_Name: FirePoint (1)
+  m_Name: FirePointB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4026,8 +4031,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8515517142366220837}
-  m_LocalRotation: {x: 0.05696297, y: 0.6927232, z: -0.05504655, w: 0.71684}
-  m_LocalPosition: {x: -2.5224628, y: 6.38, z: 61.42939}
+  m_LocalRotation: {x: 0.056962933, y: 0.6927234, z: -0.055046532, w: 0.71683997}
+  m_LocalPosition: {x: -3.0924635, y: 5.99, z: 64.379395}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4711,6 +4716,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 674eaf9e641c6d24eb6bce82c9f80005, type: 3}
+--- !u!198 &4990094382230501838 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1363708794649874213, guid: 674eaf9e641c6d24eb6bce82c9f80005, type: 3}
+  m_PrefabInstance: {fileID: 6317632779889407723}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5770524443331121222 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 556679313498187437, guid: 674eaf9e641c6d24eb6bce82c9f80005, type: 3}

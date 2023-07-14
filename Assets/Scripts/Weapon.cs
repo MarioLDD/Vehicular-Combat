@@ -10,7 +10,8 @@ public class Weapon : MonoBehaviour
     private InputActionAsset inputAsset;
     private InputActionMap player;
 
-    private RaycastHit rayHit;
+    private RaycastHit rayHitA;
+    private RaycastHit rayHitB;
 
     [SerializeField] private float bulletRange;
     [SerializeField] private float fireRate, reloadTime;
@@ -23,7 +24,7 @@ public class Weapon : MonoBehaviour
 
     [SerializeField] private GameObject bulletHolePrefabs;
     [SerializeField] private float bulletHoleLifeSpan;
-    [SerializeField] private ParticleSystem muzzleFlash;
+   
     [SerializeField] private string EnemyTag;
 
     [SerializeField] private bool AddBulletSpread = true;
@@ -33,7 +34,12 @@ public class Weapon : MonoBehaviour
     private int bulletsShot;
     //[SerializeField] private float proyectileForce;
     //[SerializeField] private Rigidbody bullet_Rb;
-    [SerializeField] private Transform firePoint;
+    [SerializeField] private Transform firePointA;
+    [SerializeField] private Transform firePointB;
+    [SerializeField] private ParticleSystem muzzleFlashA;
+    [SerializeField] private ParticleSystem muzzleFlashB;
+
+
     [SerializeField] private TMP_Text ammo_Text;
     [SerializeField] private Image ammo_Image;
     [SerializeField] private int bulletDamage = 5;
@@ -88,26 +94,44 @@ public class Weapon : MonoBehaviour
     {
         readyToShoot = false;
 
-        Vector3 direction = GetDirection();
+        Vector3 directionA = GetDirection();
 
-        if (Physics.Raycast(firePoint.position, direction, out rayHit, bulletRange))
+        if (Physics.Raycast(firePointA.position, directionA, out rayHitA, bulletRange))
         {
-            if (rayHit.collider.TryGetComponent(out HealthSystem healthSystem))
+            if (rayHitA.collider.TryGetComponent(out HealthSystem healthSystem))
             {
                 healthSystem.TakeDamage(bulletDamage);
             }
-            TrailRenderer trail = Instantiate(bulletTrail, firePoint.position, Quaternion.identity);
-            StartCoroutine(SpawnTrail(trail, rayHit.point, rayHit.normal, true));
+            TrailRenderer trail = Instantiate(bulletTrail, firePointA.position, Quaternion.identity);
+            StartCoroutine(SpawnTrail(trail, rayHitA.point, rayHitA.normal, true));
         }
         else
         {
-            TrailRenderer trail = Instantiate(bulletTrail, firePoint.position, Quaternion.identity);
-            StartCoroutine(SpawnTrail(trail, firePoint.position + direction * 100, Vector3.zero, false));
+            TrailRenderer trail = Instantiate(bulletTrail, firePointA.position, Quaternion.identity);
+            StartCoroutine(SpawnTrail(trail, firePointA.position + directionA * 100, Vector3.zero, false));
         }
 
-        muzzleFlash.Play();
+        Vector3 directionB = GetDirection();
 
-        currentAmmo--;
+        if (Physics.Raycast(firePointB.position, directionB, out rayHitB, bulletRange))
+        {
+            if (rayHitB.collider.TryGetComponent(out HealthSystem healthSystem))
+            {
+                healthSystem.TakeDamage(bulletDamage);
+            }
+            TrailRenderer trail = Instantiate(bulletTrail, firePointB.position, Quaternion.identity);
+            StartCoroutine(SpawnTrail(trail, rayHitB.point, rayHitB.normal, true));
+        }
+        else
+        {
+            TrailRenderer trail = Instantiate(bulletTrail, firePointB.position, Quaternion.identity);
+            StartCoroutine(SpawnTrail(trail, firePointB.position + directionB * 100, Vector3.zero, false));
+        }
+
+        muzzleFlashA.Play();
+        muzzleFlashB.Play();
+
+        currentAmmo -= 2;
         bulletsShot--;
         ammo_Text.text = "Munition: " + currentAmmo;
         if (currentAmmo < 1)
@@ -140,7 +164,7 @@ public class Weapon : MonoBehaviour
     }
     private Vector3 GetDirection()
     {
-        Vector3 direction = firePoint.forward;
+        Vector3 direction = firePointA.forward;
 
         if (AddBulletSpread)
         {
@@ -172,11 +196,13 @@ public class Weapon : MonoBehaviour
         if (MadeImpact)
         {
             //Instantiate(ImpactParticleSystem, HitPoint, Quaternion.LookRotation(HitNormal));
-            GameObject bulletHole = Instantiate(bulletHolePrefabs, rayHit.point + rayHit.normal * 0.001f, Quaternion.identity);
-            bulletHole.transform.LookAt(rayHit.point + rayHit.normal);
+            GameObject bulletHole = Instantiate(bulletHolePrefabs, HitPoint + HitNormal * 0.001f, Quaternion.identity);
+            bulletHole.transform.LookAt(HitPoint + HitNormal);
             Destroy(bulletHole, bulletHoleLifeSpan);
         }
 
+        Destroy(Trail.gameObject, Trail.time);
+        Destroy(Trail.gameObject, Trail.time);
         Destroy(Trail.gameObject, Trail.time);
     }
     private void ResumeBurst()

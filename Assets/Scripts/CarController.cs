@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,6 +22,12 @@ public class CarController : MonoBehaviour
 
     private Weapon weapon;
     //public float fuerzaDown = 0;
+
+
+
+    [SerializeField] private float timeToMaxTorque = 5f;
+    [SerializeField] private float timeToZeroTorque = 1f;
+    [SerializeField] private float torque = 0f;
     private void Start()
     {
         playerRb = GetComponent<Rigidbody>();
@@ -67,8 +74,33 @@ public class CarController : MonoBehaviour
 
     private void Motor()
     {
-        wheelColliders.BLWheel.motorTorque = maxMotorTorque * _movementInput.y;
-        wheelColliders.BRWheel.motorTorque = maxMotorTorque * _movementInput.y;
+
+        float targetTorque;
+        float torqueRate;
+
+        if (Mathf.Abs(_movementInput.y) >= 0f)
+        {
+            targetTorque = maxMotorTorque * _movementInput.y;
+            torqueRate = maxMotorTorque / timeToMaxTorque;
+        }
+        else
+        {
+            targetTorque = 0f;
+            torqueRate = maxMotorTorque / timeToZeroTorque;
+        }
+
+        torque = Mathf.MoveTowards(torque, targetTorque, torqueRate * Time.deltaTime);
+
+        wheelColliders.BLWheel.motorTorque = torque;
+        wheelColliders.BRWheel.motorTorque = torque;
+
+
+
+
+
+
+        //wheelColliders.BLWheel.motorTorque = maxMotorTorque * _movementInput.y;
+        //wheelColliders.BRWheel.motorTorque = maxMotorTorque * _movementInput.y;
 
     }
 
