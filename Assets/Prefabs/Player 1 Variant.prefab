@@ -35,6 +35,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
+    - target: {fileID: 4949302976486838924, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 8213322470164080138}
     - target: {fileID: 4949302976957969671, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -83,13 +87,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player 1 Variant
       objectReference: {fileID: 0}
-    - target: {fileID: 6506520293396156589, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
-      propertyPath: m_Layer
-      value: 6
+    - target: {fileID: 5035558016192723987, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -31.299988
       objectReference: {fileID: 0}
-    - target: {fileID: 6568589782563949866, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
-      propertyPath: m_Layer
-      value: 6
+    - target: {fileID: 7584847413439614116, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -31.299988
       objectReference: {fileID: 0}
     - target: {fileID: 8515517142366220832, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_CullingMask.m_Bits
@@ -125,3 +129,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+--- !u!20 &8213322470164080138 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 8515517142366220832, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+  m_PrefabInstance: {fileID: 564820205765776426}
+  m_PrefabAsset: {fileID: 0}

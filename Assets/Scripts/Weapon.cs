@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Burst.Intrinsics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -12,6 +14,9 @@ public class Weapon : MonoBehaviour
 
     private RaycastHit rayHitA;
     private RaycastHit rayHitB;
+    private RaycastHit rayHitAim;
+    [SerializeField] private RectTransform crosshair;
+    [SerializeField] private Camera cam;
 
     [SerializeField] private float bulletRange;
     [SerializeField] private float fireRate, reloadTime;
@@ -24,7 +29,7 @@ public class Weapon : MonoBehaviour
 
     [SerializeField] private GameObject bulletHolePrefabs;
     [SerializeField] private float bulletHoleLifeSpan;
-   
+
     [SerializeField] private string EnemyTag;
 
     [SerializeField] private bool AddBulletSpread = true;
@@ -35,7 +40,7 @@ public class Weapon : MonoBehaviour
     //[SerializeField] private float proyectileForce;
     //[SerializeField] private Rigidbody bullet_Rb;
     [SerializeField] private Transform firePointA;
-    [SerializeField] private Transform firePointB;
+    [SerializeField] private Transform firePointB, aimPoint;
     [SerializeField] private ParticleSystem muzzleFlashA;
     [SerializeField] private ParticleSystem muzzleFlashB;
 
@@ -51,6 +56,15 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float BulletSpeed = 100;
     [SerializeField] private ParticleSystem ImpactParticleSystem;
     [SerializeField] private TrailRenderer bulletTrail;
+
+    //AutoApuntado
+    private List<GameObject> playerList = new List<GameObject>();
+    private GameObject currentPlayer;
+
+    private LineRenderer lineRenderer;
+
+
+
     private void Awake()
     {
         currentAmmo = magazineSize;
@@ -58,27 +72,100 @@ public class Weapon : MonoBehaviour
         //controls = new InputPlayer();
         inputAsset = GetComponentInParent<PlayerInput>().actions;
         player = inputAsset.FindActionMap("Player");
-
-
-        //controls.Player.Fire.started += ctx => StartShot();
-        //controls.Player.Fire.canceled += ctx => EndShot();
-        //controls.Player.Reload.performed += ctx => Reload();
+    }
+    private void Start()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        currentPlayer = gameObject.transform.parent.gameObject;
+        foreach (var player in players)
+        {
+            if (player != currentPlayer)
+            {
+                playerList.Add(player);
+            }
+        }
+        lineRenderer = gameObject.AddComponent<LineRenderer>();
+        lineRenderer.startColor = Color.red;
+        lineRenderer.endColor = Color.red;
+        lineRenderer.startWidth = 0.1f;
+        lineRenderer.endWidth = 0.1f;
+        ammo_Text.text = currentAmmo.ToString();
 
     }
-
     void Update()
     {
+        //if (currentPlayer.name == "Player 4")
+        {
+            foreach (var player in playerList)
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(aimPoint.position, aimPoint.forward, out hit))
+                {
+                    if (hit.collider.gameObject == player.gameObject)
+                    {
+                        continue;
+                    }
+                }
+                Vector3 aimPointForward = aimPoint.transform.forward;
+                Vector3 playerDirection = (player.transform.position - aimPoint.transform.position);
+
+                Vector3 aimPointForwardProyectY = aimPointForward;
+                Vector3 playerDirectionProyectY = playerDirection;
+
+                aimPointForwardProyectY.y = 0f;
+                playerDirectionProyectY.y = 0f;
+
+                aimPointForwardProyectY = aimPointForwardProyectY.normalized;
+                playerDirectionProyectY = playerDirectionProyectY.normalized;
+
+                float dotAngle = Vector3.Dot(aimPointForwardProyectY, playerDirectionProyectY);
+                float angleInDegrees = Mathf.Acos(dotAngle) * Mathf.Rad2Deg;
+                if (angleInDegrees <= 5.5f)
+                {
+                    //Debug.Log(player.name + "   " + angleInDegrees);
+                    float vAngle = Vector3.SignedAngle(playerDirection, aimPointForward, -transform.right);
+                    //Debug.Log(vAngle);
+                    Vector3 euler = transform.localRotation.eulerAngles;
+                    euler.x += vAngle;
+
+                    euler.x = Mathf.Clamp(euler.x, -30, 7);
+                    transform.localRotation = Quaternion.Euler(euler);
+                }
+                else
+                {
+                    transform.localRotation = Quaternion.Euler(1.329f, 0, 0);
+                }
+            }
+        }
+
+
+
+
         if (isShooting && readyToShoot && currentAmmo > 0)
         {
             bulletsShot = bulletsPerBurst;
             PerfromShot();
         }
 
-    }
-    private void Start()
-    {
-        ammo_Text.text = "Munition: " + currentAmmo;
 
+    }
+    private void FixedUpdate()
+    {
+        if (Physics.Raycast(aimPoint.position, aimPoint.forward, out rayHitAim))
+        {
+            //float distance = Vector3.Distance(aimPoint.position, rayHitAim.point);
+            crosshair.position = cam.WorldToScreenPoint(rayHitAim.point);
+            //lineRenderer.SetPosition(0, aimPoint.position);
+            //lineRenderer.SetPosition(1, rayHitAim.point);
+        }
+        else
+        {
+            float distance = 100f; // Distancia razonable para el punto de destino
+            Vector3 destination = aimPoint.position + aimPoint.forward * distance;
+            crosshair.position = cam.WorldToScreenPoint(destination);
+            //lineRenderer.SetPosition(0, aimPoint.position);
+            //lineRenderer.SetPosition(1, destination);
+        }
     }
     private void StartShot()
     {
@@ -100,7 +187,7 @@ public class Weapon : MonoBehaviour
         {
             if (rayHitA.collider.TryGetComponent(out HealthSystem healthSystem))
             {
-                healthSystem.TakeDamage(bulletDamage);
+                healthSystem.TakeDamage(bulletDamage, currentPlayer);
             }
             TrailRenderer trail = Instantiate(bulletTrail, firePointA.position, Quaternion.identity);
             StartCoroutine(SpawnTrail(trail, rayHitA.point, rayHitA.normal, true));
@@ -117,7 +204,7 @@ public class Weapon : MonoBehaviour
         {
             if (rayHitB.collider.TryGetComponent(out HealthSystem healthSystem))
             {
-                healthSystem.TakeDamage(bulletDamage);
+                healthSystem.TakeDamage(bulletDamage, currentPlayer);
             }
             TrailRenderer trail = Instantiate(bulletTrail, firePointB.position, Quaternion.identity);
             StartCoroutine(SpawnTrail(trail, rayHitB.point, rayHitB.normal, true));
@@ -133,7 +220,7 @@ public class Weapon : MonoBehaviour
 
         currentAmmo -= 2;
         bulletsShot--;
-        ammo_Text.text = "Munition: " + currentAmmo;
+        ammo_Text.text = currentAmmo.ToString();
         if (currentAmmo < 1)
         {
             ammo_Image.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
@@ -160,7 +247,7 @@ public class Weapon : MonoBehaviour
         currentAmmo = addAmmo;
         ammo_Image.color = Color.white;
         ammo_Text.color = Color.white;
-        ammo_Text.text = "Munition: " + currentAmmo;
+        ammo_Text.text = currentAmmo.ToString();
     }
     private Vector3 GetDirection()
     {
@@ -226,7 +313,7 @@ public class Weapon : MonoBehaviour
         currentAmmo = magazineSize;
         ammo_Image.color = Color.white;
         ammo_Text.color = Color.white;
-        ammo_Text.text = "Munition: " + currentAmmo;
+        ammo_Text.text = currentAmmo.ToString();
         reloading = false;
     }
     private void OnEnable()

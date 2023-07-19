@@ -31,6 +31,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.x
       value: 0.079214275
       objectReference: {fileID: 0}
+    - target: {fileID: 4949302976486838924, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 2175183990286191786}
     - target: {fileID: 4949302976957969671, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -83,6 +87,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 5035558016192723987, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -31.299988
+      objectReference: {fileID: 0}
+    - target: {fileID: 7584847413439614116, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -31.299988
+      objectReference: {fileID: 0}
     - target: {fileID: 8515517142366220832, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_CullingMask.m_Bits
       value: 567
@@ -125,3 +137,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+--- !u!20 &2175183990286191786 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 8515517142366220832, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+  m_PrefabInstance: {fileID: 7494834109502258826}
+  m_PrefabAsset: {fileID: 0}

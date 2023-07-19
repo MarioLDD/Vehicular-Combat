@@ -9,6 +9,9 @@ public class ShieldSystem : MonoBehaviour
 {
 
     [SerializeField] private GameObject shield;
+    [SerializeField] private MeshRenderer meshRenderer;
+    [SerializeField] private Material material;
+
     [SerializeField] private Image shield_image;
     [SerializeField] private TMP_Text shield_Text;
     private bool ready;
@@ -19,6 +22,8 @@ public class ShieldSystem : MonoBehaviour
     void Start()
     {
         healthSystem = shield.GetComponent<HealthSystem>();
+        meshRenderer = shield.GetComponent<MeshRenderer>();
+        material = meshRenderer.material;
         DisableShield();
     }
     public void PrepareShield(int shieldHealth)
@@ -28,6 +33,8 @@ public class ShieldSystem : MonoBehaviour
         shield_image.color = Color.white;
         shield_Text.color = Color.white;
         ready = true;
+        material.SetFloat("_fill", 0.02f);
+        //material.SetColor("_Color", new Color(0, 157, 255));
     }
     public void DisableShield()
     {

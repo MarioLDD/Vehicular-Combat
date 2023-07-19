@@ -75,6 +75,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.0000000039581214
       objectReference: {fileID: 0}
+    - target: {fileID: 4949302976486838924, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 5896612350937074464}
     - target: {fileID: 4949302976957969671, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -126,6 +130,14 @@ PrefabInstance:
     - target: {fileID: 4949302976957969786, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_DefaultControlScheme
       value: Keyboard&Mouse
+      objectReference: {fileID: 0}
+    - target: {fileID: 5035558016192723987, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -31.299988
+      objectReference: {fileID: 0}
+    - target: {fileID: 7584847413439614116, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -31.299988
       objectReference: {fileID: 0}
     - target: {fileID: 8346873044216245268, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
       propertyPath: m_AnchorMax.y
@@ -193,3 +205,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+--- !u!20 &5896612350937074464 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 8515517142366220832, guid: 4368283b1bc954744a4f90af29fbb757, type: 3}
+  m_PrefabInstance: {fileID: 2880553374551767296}
+  m_PrefabAsset: {fileID: 0}

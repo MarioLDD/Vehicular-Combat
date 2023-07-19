@@ -43,7 +43,7 @@ public class CarController : MonoBehaviour
         //playerRb.centerOfMass = new Vector3(playerRb.centerOfMass.x, centerOfMass_OffSet.y, centerOfMass_OffSet.x);
 
         //Debug.Log("Vel: " + playerRb.velocity.magnitude + "  RPM: " + wheelColliders.BRWheel.rpm + " Brake: " + wheelColliders.BRWheel.brakeTorque);
-        Debug.Log("velocidad: " + (wheelColliders.BLWheel.radius * 2) * Mathf.PI * wheelColliders.BLWheel.rpm);
+        //Debug.Log("velocidad: " + (wheelColliders.BLWheel.radius * 2) * Mathf.PI * wheelColliders.BLWheel.rpm);
     }
     //private void OnFire()
     //{
@@ -140,11 +140,15 @@ public class CarController : MonoBehaviour
         wGameObject.transform.position = position;
         wGameObject.transform.rotation = rotation;
     }
-    public void DestroyCar()
+    private void OnReset()
     {
-        Debug.Log("El " + gameObject.name + " ha muerto");
-        Destroy(gameObject);
+        transform.SetPositionAndRotation(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z), Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0));
     }
+    //public void DestroyCar()
+    //{
+    //    Debug.Log("El " + gameObject.name + " ha muerto");
+    //    Destroy(gameObject);
+    //}
 
 
 }
