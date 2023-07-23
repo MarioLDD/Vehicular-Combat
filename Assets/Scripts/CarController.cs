@@ -8,13 +8,13 @@ public class CarController : MonoBehaviour
 {
     //  [SerializeField] private int maxHealth;
     private HealthSystem healthSystem;
-    public Rigidbody playerRb;
-    public WheelColliders wheelColliders;
-    public WheelVisual wheelVisual;
-    public float maxMotorTorque;
-    public float maxSteeringAngle;
-    public float maxBrakeTorque_F;
-    public float maxBrakeTorque_B;
+    [SerializeField] private Rigidbody playerRb;
+    [SerializeField] private WheelColliders wheelColliders;
+    [SerializeField] private WheelVisual wheelVisual;
+    [SerializeField] private float maxMotorTorque;
+    [SerializeField] private float maxSteeringAngle;
+    [SerializeField] private float maxBrakeTorque_F;
+    [SerializeField] private float maxBrakeTorque_R;
     private float brakeInput;
     private Vector2 _movementInput;
 
@@ -91,10 +91,10 @@ public class CarController : MonoBehaviour
 
         torque = Mathf.MoveTowards(torque, targetTorque, torqueRate * Time.deltaTime);
 
-        wheelColliders.BLWheel.motorTorque = torque;
-        wheelColliders.BRWheel.motorTorque = torque;
-
-
+        wheelColliders.R_Wheel_L.motorTorque = torque;
+        wheelColliders.R_Wheel_R.motorTorque = torque;
+        wheelColliders.F_Wheel_L.motorTorque = torque;
+        wheelColliders.F_Wheel_R.motorTorque = torque;
 
 
 
@@ -106,8 +106,8 @@ public class CarController : MonoBehaviour
 
     private void Steering()
     {
-        wheelColliders.FLWheel.steerAngle = maxSteeringAngle * _movementInput.x;
-        wheelColliders.FRWheel.steerAngle = maxSteeringAngle * _movementInput.x;
+        wheelColliders.F_Wheel_L.steerAngle = maxSteeringAngle * _movementInput.x;
+        wheelColliders.F_Wheel_R.steerAngle = maxSteeringAngle * _movementInput.x;
     }
 
     private void OnBrake(InputValue inputValue)
@@ -117,18 +117,29 @@ public class CarController : MonoBehaviour
 
     private void ApplyBrake()
     {
-        wheelColliders.BLWheel.brakeTorque = brakeInput * maxBrakeTorque_B;
-        wheelColliders.BRWheel.brakeTorque = brakeInput * maxBrakeTorque_B;
-        wheelColliders.FLWheel.brakeTorque = brakeInput * maxBrakeTorque_F;
-        wheelColliders.FRWheel.brakeTorque = brakeInput * maxBrakeTorque_F;
+        if (brakeInput != 0)
+        {
+            wheelColliders.R_Wheel_L.brakeTorque = brakeInput * maxBrakeTorque_R;
+            wheelColliders.R_Wheel_R.brakeTorque = brakeInput * maxBrakeTorque_R;
+            wheelColliders.F_Wheel_L.brakeTorque = brakeInput * maxBrakeTorque_F;
+            wheelColliders.F_Wheel_R.brakeTorque = brakeInput * maxBrakeTorque_F;
+        }
+        else
+        {
+            wheelColliders.R_Wheel_L.brakeTorque = 0;
+            wheelColliders.R_Wheel_R.brakeTorque = 0;
+            wheelColliders.F_Wheel_L.brakeTorque = 0;
+            wheelColliders.F_Wheel_R.brakeTorque = 0;
+        }
+        Debug.Log(wheelColliders.R_Wheel_L.brakeTorque);
     }
 
     private void ApplyWheelPositions()
     {
-        UpdateWheel(wheelColliders.FLWheel, wheelVisual.FLWheelVisual);
-        UpdateWheel(wheelColliders.FRWheel, wheelVisual.FRWheelVisual);
-        UpdateWheel(wheelColliders.BLWheel, wheelVisual.BLWheelVisual);
-        UpdateWheel(wheelColliders.BRWheel, wheelVisual.BRWheelVisual);
+        UpdateWheel(wheelColliders.F_Wheel_L, wheelVisual.F_Tire_L);
+        UpdateWheel(wheelColliders.F_Wheel_R, wheelVisual.F_Tire_R);
+        UpdateWheel(wheelColliders.R_Wheel_L, wheelVisual.R_Tire_L);
+        UpdateWheel(wheelColliders.R_Wheel_R, wheelVisual.R_Tire_R);
     }
 
     private void UpdateWheel(WheelCollider wCollider, GameObject wGameObject)
@@ -156,17 +167,17 @@ public class CarController : MonoBehaviour
 [System.Serializable]
 public class WheelColliders
 {
-    public WheelCollider FRWheel;
-    public WheelCollider FLWheel;
-    public WheelCollider BRWheel;
-    public WheelCollider BLWheel;
+    public WheelCollider F_Wheel_L;
+    public WheelCollider F_Wheel_R;
+    public WheelCollider R_Wheel_L;
+    public WheelCollider R_Wheel_R;
 }
 
 [System.Serializable]
 public class WheelVisual
 {
-    public GameObject FRWheelVisual;
-    public GameObject FLWheelVisual;
-    public GameObject BRWheelVisual;
-    public GameObject BLWheelVisual;
+    public GameObject F_Tire_L;
+    public GameObject F_Tire_R;
+    public GameObject R_Tire_L;
+    public GameObject R_Tire_R;
 }
