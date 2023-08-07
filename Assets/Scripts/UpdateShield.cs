@@ -31,11 +31,5 @@ public class UpdateShield : MonoBehaviour, IUpdateHealth
         {
             material.SetFloat("_fill", 0f);
         }
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
-       
-    }
+    }    
 }

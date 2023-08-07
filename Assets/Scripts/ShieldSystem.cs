@@ -30,6 +30,12 @@ public class ShieldSystem : MonoBehaviour
     {
         healthSystem.MaxHealth = shieldHealth;
         healthSystem.CurrentHealth = shieldHealth;
+        if(healthSystem.gameObject.activeSelf)
+        {
+            healthSystem.UpdateVisual();
+            material.SetFloat("_fill", 0.02f);
+            return;
+        }
         shield_image.color = Color.white;
         shield_Text.color = Color.white;
         ready = true;

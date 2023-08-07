@@ -27,7 +27,7 @@ public class PlayerManager : MonoBehaviour
     {
         score = score + addScore;
         scoreText.text = "Score: " + score;
-        Debug.Log("suma");
+        //Debug.Log("suma");
     }
     public void LoseScore(GameObject killerPlayer)
     {
@@ -44,6 +44,7 @@ public class PlayerManager : MonoBehaviour
         }
         scoreText.text = "Score: " + score;
     }
+
     private void OnEnable()
     {
         cameraPlayer.gameObject.SetActive(true);

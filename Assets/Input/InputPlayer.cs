@@ -73,7 +73,7 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Reload"",
+                    ""name"": ""Reloadd"",
                     ""type"": ""Button"",
                     ""id"": ""690a3f70-12d6-4f3d-9e3c-b0a171f3c4ae"",
                     ""expectedControlType"": ""Button"",
@@ -82,13 +82,13 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Reset"",
-                    ""type"": ""Button"",
+                    ""name"": ""Reverse"",
+                    ""type"": ""Value"",
                     ""id"": ""ce90cc8d-3586-4d5b-9f64-da4159be9207"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -106,7 +106,7 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""WASD"",
                     ""id"": ""00ca640b-d935-4593-8157-c05846ea39b3"",
-                    ""path"": ""Dpad"",
+                    ""path"": ""Dpad(mode=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -270,8 +270,19 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""05f6913d-c316-48b2-a6bb-e225f14c7960"",
+                    ""id"": ""877b147c-351c-4cca-aff8-533cee4f7352"",
                     ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""05f6913d-c316-48b2-a6bb-e225f14c7960"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
@@ -363,7 +374,7 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Reload"",
+                    ""action"": ""Reloadd"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -374,18 +385,18 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Reload"",
+                    ""action"": ""Reloadd"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
                     ""id"": ""34b4e31c-afa8-4be5-9091-493ef10d5cf1"",
-                    ""path"": ""<Keyboard>/r"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Reset"",
+                    ""action"": ""Reverse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -396,7 +407,7 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Reset"",
+                    ""action"": ""Reverse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -989,8 +1000,8 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Brake = m_Player.FindAction("Brake", throwIfNotFound: true);
         m_Player_Shield = m_Player.FindAction("Shield", throwIfNotFound: true);
-        m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
-        m_Player_Reset = m_Player.FindAction("Reset", throwIfNotFound: true);
+        m_Player_Reloadd = m_Player.FindAction("Reloadd", throwIfNotFound: true);
+        m_Player_Reverse = m_Player.FindAction("Reverse", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1069,8 +1080,8 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Brake;
     private readonly InputAction m_Player_Shield;
-    private readonly InputAction m_Player_Reload;
-    private readonly InputAction m_Player_Reset;
+    private readonly InputAction m_Player_Reloadd;
+    private readonly InputAction m_Player_Reverse;
     public struct PlayerActions
     {
         private @InputPlayer m_Wrapper;
@@ -1080,8 +1091,8 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Brake => m_Wrapper.m_Player_Brake;
         public InputAction @Shield => m_Wrapper.m_Player_Shield;
-        public InputAction @Reload => m_Wrapper.m_Player_Reload;
-        public InputAction @Reset => m_Wrapper.m_Player_Reset;
+        public InputAction @Reloadd => m_Wrapper.m_Player_Reloadd;
+        public InputAction @Reverse => m_Wrapper.m_Player_Reverse;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1106,12 +1117,12 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
             @Shield.started += instance.OnShield;
             @Shield.performed += instance.OnShield;
             @Shield.canceled += instance.OnShield;
-            @Reload.started += instance.OnReload;
-            @Reload.performed += instance.OnReload;
-            @Reload.canceled += instance.OnReload;
-            @Reset.started += instance.OnReset;
-            @Reset.performed += instance.OnReset;
-            @Reset.canceled += instance.OnReset;
+            @Reloadd.started += instance.OnReloadd;
+            @Reloadd.performed += instance.OnReloadd;
+            @Reloadd.canceled += instance.OnReloadd;
+            @Reverse.started += instance.OnReverse;
+            @Reverse.performed += instance.OnReverse;
+            @Reverse.canceled += instance.OnReverse;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1131,12 +1142,12 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
             @Shield.started -= instance.OnShield;
             @Shield.performed -= instance.OnShield;
             @Shield.canceled -= instance.OnShield;
-            @Reload.started -= instance.OnReload;
-            @Reload.performed -= instance.OnReload;
-            @Reload.canceled -= instance.OnReload;
-            @Reset.started -= instance.OnReset;
-            @Reset.performed -= instance.OnReset;
-            @Reset.canceled -= instance.OnReset;
+            @Reloadd.started -= instance.OnReloadd;
+            @Reloadd.performed -= instance.OnReloadd;
+            @Reloadd.canceled -= instance.OnReloadd;
+            @Reverse.started -= instance.OnReverse;
+            @Reverse.performed -= instance.OnReverse;
+            @Reverse.canceled -= instance.OnReverse;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1324,8 +1335,8 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
         void OnFire(InputAction.CallbackContext context);
         void OnBrake(InputAction.CallbackContext context);
         void OnShield(InputAction.CallbackContext context);
-        void OnReload(InputAction.CallbackContext context);
-        void OnReset(InputAction.CallbackContext context);
+        void OnReloadd(InputAction.CallbackContext context);
+        void OnReverse(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

@@ -21,9 +21,22 @@ public class MenuManager : MonoBehaviour
 
     public void StarGame()
     {
-        SceneManager.LoadScene("CombatArena");
+        SceneManager.LoadScene("CombatArenaOld");
     }
 
+    public void TwoPlayer()
+    {
+        SceneManager.LoadScene("TwoPlayerCombatArena");
+    }
+    public void FourPlayer()
+    {
+        SceneManager.LoadScene("FourPlayerCombatArena");
+    }
+
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
     public void Exit()
     {
         Application.Quit();

@@ -6,6 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 1383539bf23efcf43b0073eb1e67d479
+  - enabled: 0
     path: Assets/Scenes/CombatArena.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/CombatArenaOld.unity
+    guid: 8d2f43ea50bff7b449c9822f35880a43
+  - enabled: 1
+    path: Assets/Scenes/TwoPlayerCombatArena.unity
+    guid: e83e5c4c16fc3354aa5523c66ea97775
+  - enabled: 1
+    path: Assets/Scenes/FourPlayerCombatArena.unity
+    guid: ee066667522dc4e4b8be37d96b85a726
   m_configObjects: {}

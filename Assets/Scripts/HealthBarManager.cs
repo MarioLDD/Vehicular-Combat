@@ -54,6 +54,7 @@ public class HealthBarManager : MonoBehaviour, IUpdateHealth
 
     public void UpdateHealth(float maxHealth, float currentHealth)
     {
+        Debug.Log("actualizo barra de vida");
         target = currentHealth / maxHealth;        
     }
 }

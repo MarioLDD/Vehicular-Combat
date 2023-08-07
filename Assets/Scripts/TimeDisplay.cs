@@ -24,6 +24,10 @@ public class TimeDisplay : MonoBehaviour
     void Update()
     {
         float currentTime = timeManager.CurrentTime;
+        if(currentTime < 1)
+        {
+            timeText.gameObject.SetActive(false);
+        }
         int tempMin = Mathf.FloorToInt(currentTime / 60);
         int tempSeg = Mathf.FloorToInt(currentTime % 60);
         timeText.text = string.Format("{00:00}:{01:00}", tempMin, tempSeg);

@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 
 public class TimeManager : MonoBehaviour
@@ -13,8 +9,11 @@ public class TimeManager : MonoBehaviour
     private GameObject[] players;
     private int hightScore = 0;
     private GameObject winningPlayer;
+    [SerializeField] private GameObject menu;
     void Start()
     {
+        Cursor.visible = false;
+        menu.SetActive(false);
         players = GameObject.FindGameObjectsWithTag("Player");
         currentTime = (min * 60) + seg;
 
@@ -33,14 +32,23 @@ public class TimeManager : MonoBehaviour
                 foreach (var player in players)
                 {
                     int score = player.GetComponent<PlayerManager>().Score;
-                    if(score > hightScore)
+                    if (score > hightScore)
                     {
                         hightScore = score;
                         winningPlayer = player;
+                        player.transform.Find("HUD_Canvas/Victory_Panel").gameObject.SetActive(true);
+                        menu.SetActive(true);
+                        Time.timeScale = 0;
                     }
                 }
                 Debug.Log("El ganador es " + winningPlayer.name);
             }
         }
     }
+
+    private void ShowMenu()
+    {
+
+    }
+
 }

@@ -7,6 +7,7 @@ public class HealthSystem : MonoBehaviour
 {
     [SerializeField] private int maxHealth;
     [SerializeField] private bool isPlayer = false;
+    [SerializeField] private GameObject explosion;
     public UnityEvent onHealthZero;
     private int currentHealth;
     private IUpdateHealth updateHealth;
@@ -38,12 +39,15 @@ public class HealthSystem : MonoBehaviour
                 {
                     if (this.gameObject.TryGetComponent(out PlayerManager playerManager))
                     {
-                        transform.position = spawnPosition;
+                        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+                        Instantiate(explosion, rb.worldCenterOfMass, Quaternion.identity);
+                        rb.MovePosition(spawnPosition);
                         currentHealth = maxHealth;
                         UpdateVisual();
                         Debug.Log("El " + gameObject.name + " ha sido asesinado por " + playerWhoShot.name);
                         playerManager.LoseScore(playerWhoShot);
                         //this.gameObject.SetActive(false);
+                        Instantiate(explosion, rb.worldCenterOfMass, Quaternion.identity);
                     }
                 }
             }

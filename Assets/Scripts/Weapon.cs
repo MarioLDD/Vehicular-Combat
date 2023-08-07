@@ -28,6 +28,7 @@ public class Weapon : MonoBehaviour
     private bool isShooting, readyToShoot, reloading;
 
     [SerializeField] private GameObject bulletHolePrefabs;
+    [SerializeField] private GameObject hitSpark;
     [SerializeField] private float bulletHoleLifeSpan;
 
     [SerializeField] private string EnemyTag;
@@ -187,15 +188,18 @@ public class Weapon : MonoBehaviour
         {
             if (rayHitA.collider.TryGetComponent(out HealthSystem healthSystem))
             {
-                healthSystem.TakeDamage(bulletDamage, currentPlayer);
+                if (rayHitA.collider.gameObject != currentPlayer)
+                {
+                    healthSystem.TakeDamage(bulletDamage, currentPlayer);
+                }
             }
             TrailRenderer trail = Instantiate(bulletTrail, firePointA.position, Quaternion.identity);
-            StartCoroutine(SpawnTrail(trail, rayHitA.point, rayHitA.normal, true));
+            StartCoroutine(SpawnTrail(trail, rayHitA.point, rayHitA.normal, true, rayHitA.collider.transform));
         }
         else
         {
             TrailRenderer trail = Instantiate(bulletTrail, firePointA.position, Quaternion.identity);
-            StartCoroutine(SpawnTrail(trail, firePointA.position + directionA * 100, Vector3.zero, false));
+            StartCoroutine(SpawnTrail(trail, firePointA.position + directionA * 100, Vector3.zero, false, null));
         }
 
         Vector3 directionB = GetDirection();
@@ -204,15 +208,18 @@ public class Weapon : MonoBehaviour
         {
             if (rayHitB.collider.TryGetComponent(out HealthSystem healthSystem))
             {
-                healthSystem.TakeDamage(bulletDamage, currentPlayer);
+                if (rayHitB.collider.gameObject != currentPlayer)
+                {
+                    healthSystem.TakeDamage(bulletDamage, currentPlayer);
+                }
             }
             TrailRenderer trail = Instantiate(bulletTrail, firePointB.position, Quaternion.identity);
-            StartCoroutine(SpawnTrail(trail, rayHitB.point, rayHitB.normal, true));
+            StartCoroutine(SpawnTrail(trail, rayHitB.point, rayHitB.normal, true, rayHitB.collider.transform));
         }
         else
         {
             TrailRenderer trail = Instantiate(bulletTrail, firePointB.position, Quaternion.identity);
-            StartCoroutine(SpawnTrail(trail, firePointB.position + directionB * 100, Vector3.zero, false));
+            StartCoroutine(SpawnTrail(trail, firePointB.position + directionB * 100, Vector3.zero, false, null));
         }
 
         muzzleFlashA.Play();
@@ -264,7 +271,7 @@ public class Weapon : MonoBehaviour
         }
         return direction;
     }
-    private IEnumerator SpawnTrail(TrailRenderer Trail, Vector3 HitPoint, Vector3 HitNormal, bool MadeImpact)
+    private IEnumerator SpawnTrail(TrailRenderer Trail, Vector3 HitPoint, Vector3 HitNormal, bool MadeImpact, Transform impactedObject)
     {
         Vector3 startPosition = Trail.transform.position;
         float distance = Vector3.Distance(Trail.transform.position, HitPoint);
@@ -282,9 +289,10 @@ public class Weapon : MonoBehaviour
         Trail.transform.position = HitPoint;
         if (MadeImpact)
         {
-            //Instantiate(ImpactParticleSystem, HitPoint, Quaternion.LookRotation(HitNormal));
+            //Instantiate(hitSpark, HitPoint + HitNormal, Quaternion.identity);
             GameObject bulletHole = Instantiate(bulletHolePrefabs, HitPoint + HitNormal * 0.001f, Quaternion.identity);
             bulletHole.transform.LookAt(HitPoint + HitNormal);
+            bulletHole.transform.parent = impactedObject;
             Destroy(bulletHole, bulletHoleLifeSpan);
         }
 
