@@ -512,6 +512,30 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4153625382696510536, guid: 674d697b7adbcdf49bd54f8694646a31, type: 3}
+      propertyPath: horizontalAngleMax
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 4153625382696510536, guid: 674d697b7adbcdf49bd54f8694646a31, type: 3}
+      propertyPath: horizontalAngleMin
+      value: -45
+      objectReference: {fileID: 0}
+    - target: {fileID: 4153625382696510536, guid: 674d697b7adbcdf49bd54f8694646a31, type: 3}
+      propertyPath: verticalAngleConst
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4153625382696510536, guid: 674d697b7adbcdf49bd54f8694646a31, type: 3}
+      propertyPath: verticalSensitivity
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4153625382696510536, guid: 674d697b7adbcdf49bd54f8694646a31, type: 3}
+      propertyPath: horizontalAngleConst
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4153625382696510536, guid: 674d697b7adbcdf49bd54f8694646a31, type: 3}
+      propertyPath: horizontalSensitivity
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 4478898992039052907, guid: 674d697b7adbcdf49bd54f8694646a31, type: 3}
       propertyPath: m_ImplicitCom
       value: 1
@@ -2165,6 +2189,14 @@ PrefabInstance:
     - target: {fileID: 3485646882509033070, guid: a187bdbaf4bccef43a0276cec8937319, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3592498694678113766, guid: a187bdbaf4bccef43a0276cec8937319, type: 3}
+      propertyPath: verticalAngleConst
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3592498694678113766, guid: a187bdbaf4bccef43a0276cec8937319, type: 3}
+      propertyPath: horizontalAngleConst
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 4166175290919621475, guid: a187bdbaf4bccef43a0276cec8937319, type: 3}
       propertyPath: m_IsActive

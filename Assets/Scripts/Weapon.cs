@@ -5,12 +5,29 @@ using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.VirtualTexturing;
 using UnityEngine.UI;
 
 public class Weapon : MonoBehaviour
 {
     private InputActionAsset inputAsset;
     private InputActionMap player;
+    [SerializeField] private UserInput userInput;
+    private float horizontalAngle;
+    [SerializeField] private float horizontalAngleMin =-45;
+    [SerializeField] private float horizontalSensitivity = 1;
+
+    [SerializeField] private float horizontalAngleMax =45;
+
+    private float verticalAngle;
+    [SerializeField] private float verticalAngleMin = -30;
+    [SerializeField] private float verticalAngleMax = 7;
+
+    [SerializeField] private float verticalSensitivity = 1;
+
+    [SerializeField] private  float inputSmoothingFactor = 0.1f;
+    private Vector2 inputSmoothed;
+
 
     private RaycastHit rayHitA;
     private RaycastHit rayHitB;
@@ -68,6 +85,7 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
+        //userInput = GetComponent<UserInput>();
         currentAmmo = magazineSize;
         readyToShoot = true;
         //controls = new InputPlayer();
@@ -95,49 +113,70 @@ public class Weapon : MonoBehaviour
     }
     void Update()
     {
-        //if (currentPlayer.name == "Player 4")
+        Vector2 input =Vector2.zero;
+        if(userInput.enabled)
         {
-            foreach (var player in playerList)
-            {
-                RaycastHit hit;
-                if (Physics.Raycast(aimPoint.position, aimPoint.forward, out hit))
-                {
-                    if (hit.collider.gameObject == player.gameObject)
-                    {
-                        continue;
-                    }
-                }
-                Vector3 aimPointForward = aimPoint.transform.forward;
-                Vector3 playerDirection = (player.transform.position - aimPoint.transform.position);
-
-                Vector3 aimPointForwardProyectY = aimPointForward;
-                Vector3 playerDirectionProyectY = playerDirection;
-
-                aimPointForwardProyectY.y = 0f;
-                playerDirectionProyectY.y = 0f;
-
-                aimPointForwardProyectY = aimPointForwardProyectY.normalized;
-                playerDirectionProyectY = playerDirectionProyectY.normalized;
-
-                float dotAngle = Vector3.Dot(aimPointForwardProyectY, playerDirectionProyectY);
-                float angleInDegrees = Mathf.Acos(dotAngle) * Mathf.Rad2Deg;
-                if (angleInDegrees <= 5.5f)
-                {
-                    //Debug.Log(player.name + "   " + angleInDegrees);
-                    float vAngle = Vector3.SignedAngle(playerDirection, aimPointForward, -transform.right);
-                    //Debug.Log(vAngle);
-                    Vector3 euler = transform.localRotation.eulerAngles;
-                    euler.x += vAngle;
-
-                    euler.x = Mathf.Clamp(euler.x, -30, 7);
-                    transform.localRotation = Quaternion.Euler(euler);
-                }
-                else
-                {
-                    transform.localRotation = Quaternion.Euler(1.329f, 0, 0);
-                }
-            }
+            input.x= userInput.ControllerInputAimingX;
+            input.y= userInput.ControllerInputAimingY;
         }
+        GunAiming(input);
+
+
+
+
+
+
+        //if (currentPlayer.name == "Player 4") 
+
+
+        ///<summary>
+        ///el siguiente codigo contiene el auto apuntado vertical
+        ///lo desactive para implementar uno manual
+        ///borrar una vez que el autoapuntado manual funcione bien
+        ///</summary>      
+
+        //{
+        //    foreach (var player in playerList)
+        //    {
+        //        RaycastHit hit;
+        //        if (Physics.Raycast(aimPoint.position, aimPoint.forward, out hit))
+        //        {
+        //            if (hit.collider.gameObject == player.gameObject)
+        //            {
+        //                continue;
+        //            }
+        //        }
+        //        Vector3 aimPointForward = aimPoint.transform.forward;
+        //        Vector3 playerDirection = (player.transform.position - aimPoint.transform.position);
+
+        //        Vector3 aimPointForwardProyectY = aimPointForward;
+        //        Vector3 playerDirectionProyectY = playerDirection;
+
+        //        aimPointForwardProyectY.y = 0f;
+        //        playerDirectionProyectY.y = 0f;
+
+        //        aimPointForwardProyectY = aimPointForwardProyectY.normalized;
+        //        playerDirectionProyectY = playerDirectionProyectY.normalized;
+
+        //        float dotAngle = Vector3.Dot(aimPointForwardProyectY, playerDirectionProyectY);
+        //        float angleInDegrees = Mathf.Acos(dotAngle) * Mathf.Rad2Deg;
+        //        if (angleInDegrees <= 5.5f)
+        //        {
+        //            //Debug.Log(player.name + "   " + angleInDegrees);
+        //            float vAngle = Vector3.SignedAngle(playerDirection, aimPointForward, -transform.right);
+        //            //Debug.Log(vAngle);
+        //            Vector3 euler = transform.localRotation.eulerAngles;
+        //            euler.x += vAngle;
+
+        //            euler.x = Mathf.Clamp(euler.x, -30, 7);
+        //            transform.localRotation = Quaternion.Euler(euler);
+        //        }
+        //        else
+        //        {
+        //            transform.localRotation = Quaternion.Euler(1.329f, 0, 0);
+        //        }
+        //    }
+        //}
 
 
 
@@ -167,6 +206,27 @@ public class Weapon : MonoBehaviour
             //lineRenderer.SetPosition(0, aimPoint.position);
             //lineRenderer.SetPosition(1, destination);
         }
+    }
+
+    private void GunAiming(Vector2 input)
+    {
+        Debug.Log("MouseX: " + input.x + "MouseY: " + input.y);
+
+        input.x *= horizontalSensitivity;
+        input.y *= verticalSensitivity;
+
+        inputSmoothed.x = Mathf.Lerp(inputSmoothed.x, input.x, inputSmoothingFactor);
+        inputSmoothed.y = Mathf.Lerp(inputSmoothed.y, input.y, inputSmoothingFactor);
+
+        horizontalAngle += inputSmoothed.x;
+        verticalAngle += inputSmoothed.y;
+
+        horizontalAngle = Mathf.Clamp(horizontalAngle, horizontalAngleMin, horizontalAngleMax);
+        verticalAngle = Mathf.Clamp(verticalAngle, verticalAngleMin, verticalAngleMax);
+
+        transform.localRotation = Quaternion.Euler(-verticalAngle, horizontalAngle, 0);
+
+
     }
     private void StartShot()
     {

@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 914617401604190073, guid: b23f8001eee215f488b19395c12f071b, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 1138659075642984419, guid: b23f8001eee215f488b19395c12f071b, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -62,15 +66,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4350810679464608501, guid: b23f8001eee215f488b19395c12f071b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.456421
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4350810679464608501, guid: b23f8001eee215f488b19395c12f071b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.8900223
+      value: 4.89
       objectReference: {fileID: 0}
     - target: {fileID: 4350810679464608501, guid: b23f8001eee215f488b19395c12f071b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -16.896362
+      value: -12.88
+      objectReference: {fileID: 0}
+    - target: {fileID: 4350810679464608501, guid: b23f8001eee215f488b19395c12f071b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99685764
+      objectReference: {fileID: 0}
+    - target: {fileID: 4350810679464608501, guid: b23f8001eee215f488b19395c12f071b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.07921428
+      objectReference: {fileID: 0}
+    - target: {fileID: 4350810679464608501, guid: b23f8001eee215f488b19395c12f071b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4350810679464608501, guid: b23f8001eee215f488b19395c12f071b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6069698034767826000, guid: b23f8001eee215f488b19395c12f071b, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6174978376139099240, guid: b23f8001eee215f488b19395c12f071b, type: 3}
       propertyPath: m_DefaultControlScheme
