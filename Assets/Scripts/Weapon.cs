@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.VirtualTexturing;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 
 public class Weapon : MonoBehaviour
 {
@@ -14,18 +15,17 @@ public class Weapon : MonoBehaviour
     private InputActionMap player;
     [SerializeField] private UserInput userInput;
     private float horizontalAngle;
-    [SerializeField] private float horizontalAngleMin =-45;
-    [SerializeField] private float horizontalSensitivity = 1;
+    [SerializeField] private float horizontalAngleMin = -45;
+    [SerializeField] private float inputAimingSensitivity = 1;
 
-    [SerializeField] private float horizontalAngleMax =45;
+    [SerializeField] private float horizontalAngleMax = 45;
 
     private float verticalAngle;
     [SerializeField] private float verticalAngleMin = -30;
     [SerializeField] private float verticalAngleMax = 7;
 
-    [SerializeField] private float verticalSensitivity = 1;
 
-    [SerializeField] private  float inputSmoothingFactor = 0.1f;
+    [SerializeField] private float inputSmoothingFactor = 0.1f;
     private Vector2 inputSmoothed;
 
 
@@ -113,12 +113,10 @@ public class Weapon : MonoBehaviour
     }
     void Update()
     {
-        Vector2 input =Vector2.zero;
-        if(userInput.enabled)
-        {
-            input.x= userInput.ControllerInputAimingX;
-            input.y= userInput.ControllerInputAimingY;
-        }
+        Vector2 input = Vector2.zero;
+
+        input = userInput.ControllerInputAiming;
+
         GunAiming(input);
 
 
@@ -191,38 +189,49 @@ public class Weapon : MonoBehaviour
     }
     private void FixedUpdate()
     {
+
         if (Physics.Raycast(aimPoint.position, aimPoint.forward, out rayHitAim))
         {
             //float distance = Vector3.Distance(aimPoint.position, rayHitAim.point);
             crosshair.position = cam.WorldToScreenPoint(rayHitAim.point);
-            //lineRenderer.SetPosition(0, aimPoint.position);
-            //lineRenderer.SetPosition(1, rayHitAim.point);
+            lineRenderer.SetPosition(0, aimPoint.position);//laser
+            lineRenderer.SetPosition(1, rayHitAim.point);//laser
         }
         else
         {
             float distance = 100f; // Distancia razonable para el punto de destino
             Vector3 destination = aimPoint.position + aimPoint.forward * distance;
             crosshair.position = cam.WorldToScreenPoint(destination);
-            //lineRenderer.SetPosition(0, aimPoint.position);
-            //lineRenderer.SetPosition(1, destination);
+            lineRenderer.SetPosition(0, aimPoint.position);//laser
+            lineRenderer.SetPosition(1, destination);//laser
         }
     }
 
     private void GunAiming(Vector2 input)
     {
-        Debug.Log("MouseX: " + input.x + "MouseY: " + input.y);
 
-        input.x *= horizontalSensitivity;
-        input.y *= verticalSensitivity;
+        input *= inputAimingSensitivity;
+        // inputSmoothed.x = Mathf.Lerp(inputSmoothed.x, input.x, inputSmoothingFactor);
+        //  inputSmoothed.y = Mathf.Lerp(inputSmoothed.y, input.y, inputSmoothingFactor);
+        //  Debug.Log("MouseX: " + inputSmoothed.x + "MouseY: " + inputSmoothed.y);
 
-        inputSmoothed.x = Mathf.Lerp(inputSmoothed.x, input.x, inputSmoothingFactor);
-        inputSmoothed.y = Mathf.Lerp(inputSmoothed.y, input.y, inputSmoothingFactor);
+
+        inputSmoothed = Vector2.Lerp(inputSmoothed, input, inputSmoothingFactor);
+
+        float angle = Mathf.Atan2(input.y, input.x) * Mathf.Rad2Deg;
+        //Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        // transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, inputSmoothingFactor );
+
+
 
         horizontalAngle += inputSmoothed.x;
         verticalAngle += inputSmoothed.y;
 
-        horizontalAngle = Mathf.Clamp(horizontalAngle, horizontalAngleMin, horizontalAngleMax);
-        verticalAngle = Mathf.Clamp(verticalAngle, verticalAngleMin, verticalAngleMax);
+        //horizontalAngle += input.x;
+        //verticalAngle += input.y;
+
+        //horizontalAngle = Mathf.Clamp(horizontalAngle, horizontalAngleMin, horizontalAngleMax);
+        //verticalAngle = Mathf.Clamp(verticalAngle, verticalAngleMin, verticalAngleMax);
 
         transform.localRotation = Quaternion.Euler(-verticalAngle, horizontalAngle, 0);
 
@@ -246,9 +255,9 @@ public class Weapon : MonoBehaviour
 
         if (Physics.Raycast(firePointA.position, directionA, out rayHitA, bulletRange))
         {
-            if (rayHitA.collider.TryGetComponent(out HealthSystem healthSystem))
+            if (rayHitA.collider.gameObject.TryGetComponentInParents(out HealthSystem healthSystem))
             {
-                if (rayHitA.collider.gameObject != currentPlayer)
+                if (healthSystem.gameObject != currentPlayer)
                 {
                     healthSystem.TakeDamage(bulletDamage, currentPlayer);
                 }
@@ -266,9 +275,9 @@ public class Weapon : MonoBehaviour
 
         if (Physics.Raycast(firePointB.position, directionB, out rayHitB, bulletRange))
         {
-            if (rayHitB.collider.TryGetComponent(out HealthSystem healthSystem))
+            if (rayHitB.collider.gameObject.TryGetComponentInParents(out HealthSystem healthSystem))
             {
-                if (rayHitB.collider.gameObject != currentPlayer)
+                if (healthSystem.gameObject != currentPlayer)
                 {
                     healthSystem.TakeDamage(bulletDamage, currentPlayer);
                 }

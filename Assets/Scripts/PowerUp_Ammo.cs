@@ -10,7 +10,7 @@ public class PowerUp_Ammo: MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            other.GetComponentInChildren<Weapon>().Addmunitions(ammunition);
+            other.GetComponentInParent<PlayerManager>().Weapon.Addmunitions(ammunition);                
             Destroy(gameObject);
         }
     }

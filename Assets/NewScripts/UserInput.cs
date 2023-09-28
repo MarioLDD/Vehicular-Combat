@@ -11,10 +11,10 @@ public class UserInput : MonoBehaviour
     private float controllerInputX;
     private float controllerInputY;
     private float controllerInputReverse;
-    private float controllerInputHandBrake;
+    private bool controllerInputHandBrake;
+    private bool controllerInputNitro;
 
-    private float controllerInputAimingX;
-    private float controllerInputAimingY;
+    private Vector2 controllerInputAiming;
 
     public float ControllerInputX
     {
@@ -31,21 +31,17 @@ public class UserInput : MonoBehaviour
         get { return controllerInputReverse; }
     }
 
-    public float ControllerInputHandBrake
+    public bool ControllerInputHandBrake
     {
         get { return controllerInputHandBrake; }
     }
 
-    public float ControllerInputAimingX
+    public Vector2 ControllerInputAiming
     {
-        get { return controllerInputAimingX; }
+        get { return controllerInputAiming; }
     }
 
-    public float ControllerInputAimingY
-    {
-        get { return controllerInputAimingY; }
-    }
-
+    public bool ControllerInputNitro { get { return controllerInputNitro; } }
     private void OnMove(InputValue inputValue)
     {
         //_movementInput = inputValue.Get<Vector2>();
@@ -54,18 +50,36 @@ public class UserInput : MonoBehaviour
     }
     private void OnAiming(InputValue inputValue)
     {
-        controllerInputAimingX = inputValue.Get<Vector2>().x;
-        controllerInputAimingY = inputValue.Get<Vector2>().y;
+        controllerInputAiming = inputValue.Get<Vector2>();
     }
 
     private void OnBrake(InputValue inputValue)
     {
-        controllerInputHandBrake = inputValue.Get<float>();
+        if (inputValue.Get<float>() > 0.5f)
+        {
+            controllerInputHandBrake = true;
+        }
+        else
+        {
+            controllerInputHandBrake = false;
+        }
     }
 
     private void OnReverse(InputValue inputValue)
     {
         controllerInputReverse = inputValue.Get<float>();
+    }
+
+    private void OnNitro(InputValue inputValue)
+    {
+        if (inputValue.Get<float>() > 0.5f)
+        {
+            controllerInputNitro = true;
+        }
+        else
+        {
+            controllerInputNitro = false;
+        }
     }
 }
 

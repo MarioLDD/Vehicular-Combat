@@ -9,8 +9,8 @@ public class ShieldSystem : MonoBehaviour
 {
 
     [SerializeField] private GameObject shield;
-    [SerializeField] private MeshRenderer meshRenderer;
-    [SerializeField] private Material material;
+    private MeshRenderer meshRenderer;
+    private Material material;
 
     [SerializeField] private Image shield_image;
     [SerializeField] private TMP_Text shield_Text;

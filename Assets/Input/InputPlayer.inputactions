@@ -36,7 +36,7 @@
                     "name": "Brake",
                     "type": "Value",
                     "id": "cec4924c-0493-4998-a71a-e605377d5a5f",
-                    "expectedControlType": "Axis",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -64,6 +64,15 @@
                     "type": "Value",
                     "id": "ce90cc8d-3586-4d5b-9f64-da4159be9207",
                     "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Nitro",
+                    "type": "Value",
+                    "id": "fa9b418e-c7db-4ce3-90d3-ea2bd3792b34",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -216,9 +225,9 @@
                 {
                     "name": "",
                     "id": "8c8e490b-c610-4785-884f-f04217b23ca4",
-                    "path": "<Pointer>/delta",
+                    "path": "<Mouse>/delta",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "NormalizeVector2",
                     "groups": ";Keyboard&Mouse;Touch",
                     "action": "Aiming",
                     "isComposite": false,
@@ -259,17 +268,6 @@
                 },
                 {
                     "name": "",
-                    "id": "05f6913d-c316-48b2-a6bb-e225f14c7960",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Fire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "886e731e-7071-4ae4-95c0-e61739dad6fd",
                     "path": "<Touchscreen>/primaryTouch/tap",
                     "interactions": "",
@@ -304,7 +302,7 @@
                 {
                     "name": "",
                     "id": "2f4ffec6-6737-4c6e-a002-cf4ebe2493b7",
-                    "path": "<Keyboard>/leftShift",
+                    "path": "<Keyboard>/Space",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -386,6 +384,17 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Reverse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4729faee-0b9a-4711-828a-c828a0f5859c",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Nitro",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

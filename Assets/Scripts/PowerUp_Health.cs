@@ -10,7 +10,7 @@ public class PowerUp_Health : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            healthSystem = other.GetComponent<HealthSystem>();
+            healthSystem = other.GetComponentInParent<HealthSystem>();
             if((healthSystem.CurrentHealth + addhealth) < healthSystem.MaxHealth)
             {
                 healthSystem.CurrentHealth += 50;

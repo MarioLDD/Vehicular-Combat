@@ -72,7 +72,7 @@ using UnityEngine;
                 inputX = userInput.ControllerInputX;
                 inputY = userInput.ControllerInputY;
                 inputR = userInput.ControllerInputReverse;
-                inputH = userInput.ControllerInputHandBrake;
+               // inputH = userInput.ControllerInputHandBrake;//desactivado solo por el cambio a la nueva implementacion
             }
 
             // calculate vehicle velocity in the forward direction

@@ -58,7 +58,7 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                     ""name"": ""Brake"",
                     ""type"": ""Value"",
                     ""id"": ""cec4924c-0493-4998-a71a-e605377d5a5f"",
-                    ""expectedControlType"": ""Axis"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -86,6 +86,15 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                     ""type"": ""Value"",
                     ""id"": ""ce90cc8d-3586-4d5b-9f64-da4159be9207"",
                     ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Nitro"",
+                    ""type"": ""Value"",
+                    ""id"": ""fa9b418e-c7db-4ce3-90d3-ea2bd3792b34"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -238,9 +247,9 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""8c8e490b-c610-4785-884f-f04217b23ca4"",
-                    ""path"": ""<Pointer>/delta"",
+                    ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""NormalizeVector2"",
                     ""groups"": "";Keyboard&Mouse;Touch"",
                     ""action"": ""Aiming"",
                     ""isComposite"": false,
@@ -281,17 +290,6 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""05f6913d-c316-48b2-a6bb-e225f14c7960"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Fire"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""886e731e-7071-4ae4-95c0-e61739dad6fd"",
                     ""path"": ""<Touchscreen>/primaryTouch/tap"",
                     ""interactions"": """",
@@ -326,7 +324,7 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2f4ffec6-6737-4c6e-a002-cf4ebe2493b7"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""path"": ""<Keyboard>/Space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
@@ -408,6 +406,17 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Reverse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4729faee-0b9a-4711-828a-c828a0f5859c"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Nitro"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1002,6 +1011,7 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
         m_Player_Shield = m_Player.FindAction("Shield", throwIfNotFound: true);
         m_Player_Reloadd = m_Player.FindAction("Reloadd", throwIfNotFound: true);
         m_Player_Reverse = m_Player.FindAction("Reverse", throwIfNotFound: true);
+        m_Player_Nitro = m_Player.FindAction("Nitro", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1082,6 +1092,7 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Shield;
     private readonly InputAction m_Player_Reloadd;
     private readonly InputAction m_Player_Reverse;
+    private readonly InputAction m_Player_Nitro;
     public struct PlayerActions
     {
         private @InputPlayer m_Wrapper;
@@ -1093,6 +1104,7 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
         public InputAction @Shield => m_Wrapper.m_Player_Shield;
         public InputAction @Reloadd => m_Wrapper.m_Player_Reloadd;
         public InputAction @Reverse => m_Wrapper.m_Player_Reverse;
+        public InputAction @Nitro => m_Wrapper.m_Player_Nitro;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1123,6 +1135,9 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
             @Reverse.started += instance.OnReverse;
             @Reverse.performed += instance.OnReverse;
             @Reverse.canceled += instance.OnReverse;
+            @Nitro.started += instance.OnNitro;
+            @Nitro.performed += instance.OnNitro;
+            @Nitro.canceled += instance.OnNitro;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1148,6 +1163,9 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
             @Reverse.started -= instance.OnReverse;
             @Reverse.performed -= instance.OnReverse;
             @Reverse.canceled -= instance.OnReverse;
+            @Nitro.started -= instance.OnNitro;
+            @Nitro.performed -= instance.OnNitro;
+            @Nitro.canceled -= instance.OnNitro;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1337,6 +1355,7 @@ public partial class @InputPlayer: IInputActionCollection2, IDisposable
         void OnShield(InputAction.CallbackContext context);
         void OnReloadd(InputAction.CallbackContext context);
         void OnReverse(InputAction.CallbackContext context);
+        void OnNitro(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

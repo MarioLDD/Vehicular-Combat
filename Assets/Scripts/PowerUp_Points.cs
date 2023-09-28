@@ -10,7 +10,7 @@ public class PowerUp_Points : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PlayerManager playerManager = other.GetComponent<PlayerManager>();
+            PlayerManager playerManager = other.GetComponentInParent<PlayerManager>();
             playerManager.WinScore(points);
             Destroy(gameObject);
         }

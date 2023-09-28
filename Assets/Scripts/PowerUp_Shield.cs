@@ -9,7 +9,7 @@ public class PowerUp_Shield : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            other.GetComponent<ShieldSystem>().PrepareShield(shieldHealth);
+            other.GetComponentInParent<ShieldSystem>().PrepareShield(shieldHealth);
             Destroy(gameObject);
         }
     }
