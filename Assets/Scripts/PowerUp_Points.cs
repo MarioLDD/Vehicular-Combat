@@ -8,7 +8,7 @@ public class PowerUp_Points : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("PlayerCollider"))
         {
             PlayerManager playerManager = other.GetComponentInParent<PlayerManager>();
             playerManager.WinScore(points);

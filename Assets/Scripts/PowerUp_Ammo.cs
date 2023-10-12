@@ -8,7 +8,7 @@ public class PowerUp_Ammo: MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("PlayerCollider"))
         {
             other.GetComponentInParent<PlayerManager>().Weapon.Addmunitions(ammunition);                
             Destroy(gameObject);

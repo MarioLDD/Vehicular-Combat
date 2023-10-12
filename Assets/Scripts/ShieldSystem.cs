@@ -39,8 +39,8 @@ public class ShieldSystem : MonoBehaviour
         shield_image.color = Color.white;
         shield_Text.color = Color.white;
         ready = true;
+        healthSystem.UpdateVisual();
         material.SetFloat("_fill", 0.02f);
-        //material.SetColor("_Color", new Color(0, 157, 255));
     }
     public void DisableShield()
     {

@@ -8,6 +8,7 @@ public class HealthSystem : MonoBehaviour
     [SerializeField] private int maxHealth;
     [SerializeField] private bool isPlayer = false;
     [SerializeField] private GameObject explosion;
+    [SerializeField] private Collider playerCollider;
     public UnityEvent onHealthZero;
     private int currentHealth;
     private IUpdateHealth updateHealth;
@@ -20,8 +21,13 @@ public class HealthSystem : MonoBehaviour
     private void Start()
     {
         spawnPosition = gameObject.transform.position;
-        currentHealth = maxHealth;
+        currentHealth = maxHealth;        
         updateHealth = GetComponentInChildren<IUpdateHealth>(false);
+        if (playerCollider == null)
+        {
+            playerCollider = GetComponentInChildren<Collider>(false);
+
+        }
     }
     public void TakeDamage(int damage, GameObject playerWhoShot = null)
     {
@@ -39,15 +45,15 @@ public class HealthSystem : MonoBehaviour
                 {
                     if (this.gameObject.TryGetComponent(out PlayerManager playerManager))
                     {
+                        playerCollider.enabled = false;
+                        currentHealth = maxHealth;
                         Rigidbody rb = gameObject.GetComponent<Rigidbody>();
                         Instantiate(explosion, rb.worldCenterOfMass, Quaternion.identity);
+                        playerCollider.enabled = true;
                         rb.MovePosition(spawnPosition);
-                        currentHealth = maxHealth;
                         UpdateVisual();
                         Debug.Log("El " + gameObject.name + " ha sido asesinado por " + playerWhoShot.name);
                         playerManager.LoseScore(playerWhoShot);
-                        //this.gameObject.SetActive(false);
-                        Instantiate(explosion, rb.worldCenterOfMass, Quaternion.identity);
                     }
                 }
             }

@@ -7,13 +7,16 @@ using UnityEngine.InputSystem;
 using UnityEngine.SocialPlatforms.Impl;
 [RequireComponent(typeof(Rigidbody), typeof(UserInput), typeof(ShieldSystem))]
 [RequireComponent(typeof(HealthSystem), typeof(TimeDisplay), typeof(PlayerInput))]
+[RequireComponent(typeof(FlamesSystem))]
 
 public class PlayerManager : MonoBehaviour
 {
     private Camera cameraPlayer;
     private GameObject player;
     private Weapon weapon;
+    private GameObject flamesPoint;
     public Weapon Weapon { get { return weapon; } }
+    public GameObject FlamesPoint { get { return flamesPoint; } }
 
 
     [SerializeField] private int score;
@@ -23,20 +26,35 @@ public class PlayerManager : MonoBehaviour
 
     private void Awake()
     {
+        player = this.gameObject;
+
         weapon = GetComponentInChildren<Weapon>();
+
+        for (int i = 0; i < player.transform.childCount; i++)
+        {
+            Transform hijo = player.transform.GetChild(i);
+
+            // Compara el nombre del hijo con el nombre que estás buscando
+            if (hijo.name == "FlamesPoint")
+            {
+                // Has encontrado el hijo, puedes acceder a él.
+                flamesPoint = hijo.gameObject;
+                // Realiza las operaciones que necesites con 'hijoGameObject'.
+                break; // Puedes salir del bucle una vez que encuentres el hijo.
+            }
+        }
     }
     void Start()
     {
-        player = this.gameObject;
         cameraPlayer = GetComponentInChildren<Camera>();
         cameraPlayer.transform.SetParent(null);
 
-        scoreText.text = "Score: " + score;
+        UpdateScoreText();
     }
     public void WinScore(int addScore)
     {
-        score = score + addScore;
-        scoreText.text = "Score: " + score;
+        score += addScore;
+        UpdateScoreText();
         //Debug.Log("suma");
     }
     public void LoseScore(GameObject killerPlayer)
@@ -45,13 +63,17 @@ public class PlayerManager : MonoBehaviour
         //if (score > 0)
 
         int subtractScore = score / 2;
+        score -= subtractScore;
 
-        score = score - subtractScore;
         if (killerPlayer.TryGetComponent(out PlayerManager playerManager))
         {
-
             playerManager.WinScore(subtractScore + 500);
         }
+        UpdateScoreText();
+    }
+
+    private void UpdateScoreText()
+    {
         scoreText.text = "Score: " + score;
     }
 

@@ -8,7 +8,7 @@ public class PowerUp_Health : MonoBehaviour
     private HealthSystem healthSystem;
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if(other.CompareTag("PlayerCollider"))
         {
             healthSystem = other.GetComponentInParent<HealthSystem>();
             if((healthSystem.CurrentHealth + addhealth) < healthSystem.MaxHealth)

@@ -7,7 +7,7 @@ public class PowerUp_Shield : MonoBehaviour
     [SerializeField] private int shieldHealth;
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if(other.CompareTag("PlayerCollider"))
         {
             other.GetComponentInParent<ShieldSystem>().PrepareShield(shieldHealth);
             Destroy(gameObject);
