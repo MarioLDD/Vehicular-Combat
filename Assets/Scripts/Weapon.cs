@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering.VirtualTexturing;
 using UnityEngine.UI;
 using UnityEngine.Windows;
+using static UnityEngine.LightAnchor;
 
 public class Weapon : MonoBehaviour
 {
@@ -268,23 +269,24 @@ public class Weapon : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        //Visualizador de apuntado
 
-        if (Physics.Raycast(aimPoint.position, aimPoint.forward, out rayHitAim))
-        {
-            float distance = Vector3.Distance(aimPoint.position, rayHitAim.point);
-            //crosshair.position = camera.WorldToScreenPoint(rayHitAim.point);
-            lineRenderer.SetPosition(0, aimPoint.position);//laser
-            lineRenderer.SetPosition(1, rayHitAim.point);//laser
-        }
-        else
-        {
-            float distance = 100f; // Distancia razonable para el punto de destino
-            Vector3 destination = aimPoint.position + aimPoint.forward * distance;
-            //crosshair.position = cam.WorldToScreenPoint(destination);
-            lineRenderer.SetPosition(0, aimPoint.position);//laser
-            lineRenderer.SetPosition(1, destination);//laser
-        }
+        //if (Physics.Raycast(aimPoint.position, aimPoint.forward, out rayHitAim))
+        //{
+        //    float distance = Vector3.Distance(aimPoint.position, rayHitAim.point);
+        //    lineRenderer.SetPosition(0, aimPoint.position);//laser
+        //    lineRenderer.SetPosition(1, rayHitAim.point);//laser
+        //}
+        //else
+        //{
+        //    float distance = 100f; // Distancia razonable para el punto de destino
+        //    Vector3 destination = aimPoint.position + aimPoint.forward * distance;
+        //    lineRenderer.SetPosition(0, aimPoint.position);//laser
+        //    lineRenderer.SetPosition(1, destination);//laser
+        //}
     }
+
+    
 
     private void GunAiming(Vector2 input)
     {
@@ -297,11 +299,50 @@ public class Weapon : MonoBehaviour
 
         Ray ray = camera.ScreenPointToRay(crosshair.position);
 
-        Quaternion targetRotation = Quaternion.LookRotation(ray.direction);
-        targetRotation = Quaternion.Euler(Mathf.Clamp(targetRotation.eulerAngles.x, horizontalAngleMin, horizontalAngleMax), Mathf.Clamp(targetRotation.eulerAngles.y, verticalAngleMin, verticalAngleMax), 0);
-        transform.localRotation = targetRotation;
+        Vector3 gunDirection;
+        RaycastHit hit;
+        // Does the ray intersect any objects excluding the player layer
+        if (Physics.Raycast(aimPoint.position, ray.direction, out hit, Mathf.Infinity))
+        {
+            gunDirection = hit.point - transform.position;
+        }
+        else
+        {
+            gunDirection = (ray.origin + ray.direction * 100) - transform.position;
+        }
 
+
+        transform.rotation = Quaternion.LookRotation(gunDirection);
+
+        Vector3 rot = transform.localRotation.eulerAngles;
+        float rotY = rot.y;
+        float rotX = rot.x;
+
+        //transform to negative angle if >180
+        rotY = (rotY > 180) ? rotY - 360 : rotY;
+        rotY = Mathf.Clamp(rotY, horizontalAngleMin, horizontalAngleMax);
+        //transform back to 360 positive value
+        rotY = (rotY < 0) ? rotY + 360 : rotY;
+
+        //transform to negative angle if >180
+        rotX = (rotX > 180) ? rotX - 360 : rotX;
+        rotX = Mathf.Clamp(rotX, verticalAngleMin, verticalAngleMax);
+        //transform back to 360 positive value
+        rotX = (rotX < 0) ? rotX + 360 : rotX;
+
+        Quaternion localRotation = Quaternion.Euler(rotX, rotY, 0);
+        transform.localRotation = localRotation;
     }
+
+
+
+
+
+
+
+
+
+
     private void StartShot()
     {
         isShooting = true;

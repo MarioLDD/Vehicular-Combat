@@ -25,8 +25,7 @@ public class MenuGameplay : MonoBehaviour
     //}
     private void OnEnable()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = true;
+        
     }
     // Update is called once per frame
     void Update()

@@ -14,7 +14,7 @@ public class FlamesSystem : MonoBehaviour
 
     void Start()
     {
-        if(flamesPoint == null)
+        if (flamesPoint == null)
         {
             flamesPoint = gameObject.GetComponent<PlayerManager>().FlamesPoint;
         }
@@ -22,7 +22,7 @@ public class FlamesSystem : MonoBehaviour
         {
             wildFire = flamesPoint.GetComponentInChildren<ParticleSystem>();
         }
-        DisableFire();
+        DisableFireIcon();
     }
 
     public void PreparePowerUp(int LiveTime)
@@ -32,7 +32,7 @@ public class FlamesSystem : MonoBehaviour
         ready = true;
     }
 
-    private void DisableFire()
+    private void DisableFireIcon()
     {
         fire_image.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
     }
@@ -42,12 +42,12 @@ public class FlamesSystem : MonoBehaviour
         wildFire.Play();
         yield return new WaitForSeconds(particleLiveTime);
         wildFire.Stop();
+        DisableFireIcon();
     }
 
     public void OnPowerUps()
     {
-        Debug.Log("EEEEEE");
-        if(ready)
+        if (ready)
         {
             StopCoroutine(FireActivator());
             StartCoroutine(FireActivator());

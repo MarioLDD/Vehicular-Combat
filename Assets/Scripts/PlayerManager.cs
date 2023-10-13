@@ -46,6 +46,7 @@ public class PlayerManager : MonoBehaviour
     }
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         cameraPlayer = GetComponentInChildren<Camera>();
         cameraPlayer.transform.SetParent(null);
 

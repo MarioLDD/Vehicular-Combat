@@ -41,6 +41,10 @@ public class TimeManager : MonoBehaviour
                     }
                     winningPlayer.transform.Find("HUD_Canvas/Victory_Panel").gameObject.SetActive(true);
                     menu.SetActive(true);
+                    Cursor.lockState = CursorLockMode.None;
+                            Cursor.visible = true;
+
+
                     Time.timeScale = 0;
                     Debug.Log("El ganador es " + winningPlayer.name);
                 }
