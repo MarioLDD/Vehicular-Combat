@@ -9,22 +9,69 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcf7219bab7fe46a1ad266029b2fee19, type: 3}
+  m_Script: {fileID: 11500000, guid: cef4a908bdef05b45867bab9ef85d793, type: 3}
   m_Name: Readme
   m_EditorClassIdentifier: 
-  icon: {fileID: 2800000, guid: 34f556d724b1bbf4097ca6220db2c581, type: 3}
-  title: COSAS PARA HACER
+  icon: {fileID: 2800000, guid: 7e15d312343cd744d8b36c4bff621bb0, type: 3}
+  title: Wheel Warriors
+  fileName: Readme
   prevReadme: {fileID: 0}
   nextReadme: {fileID: 0}
   sections:
-  - name: Header -Dolly Track
-    heading: Dolly Track
-    text: Hacer un Dolly Track para mover la camara en el menu principal
+  - name: Bugs
+    heading: Bugs
+    text: "*fuego no hace da\xF1o\n*el Time.Scaletime queda en cero despues de terminar
+      la partida y no vuelve a la normalidad al rejugar\n*la partida no finaliza
+      si alguno no obtiene puntos"
     linkText: 
     url: 
-  - name: Header -NetCode
-    heading: NetCode
-    text: Implementar NetCode
+    isDone: 0
+  - name: Cosas a agregar
+    heading: Cosas a agregar
+    text: "*Peque\xF1o retraso para respawnear\n*Esqueleto del auto luego de explosion\n*hacer
+      volar partes del auto"
     linkText: 
     url: 
-  isRoot: 0
+    isDone: 0
+  - name: Controles
+    heading: Controles
+    text: "Ver que controles usan juegos del estilo.\n\n      Por ejemplo: Vigilante\n     
+      8, Twisted Metal,  Heavy Metal Machines, Notmycar. Ver si hay mas."
+    linkText: best-car-combat-games-ever-ranked
+    url: https://www.thegamer.com/best-car-combat-games-ever-ranked/
+    isDone: 0
+  - name: Power Ups
+    heading: Power Ups
+    text: '*ponerle al escudo un tiempo de funcionamiento
+
+      *que se pueda tener
+      un solo power up a la vez
+
+      *que el collider sea mas grande que la caja'
+    linkText: 
+    url: 
+    isDone: 0
+  - name: Mira
+    heading: Mira
+    text: "*crosshair mas visible\n\n *primero probar con autoapuntado vertical,
+      sino un auto apuntado en cercanias de la mira.\n\n*que se centre de forma automatica
+      si no hay movimiento\n\n*ver trigonometria del apuntado porque no dispara donde
+      se encuentra la mira probar de tirar raycast hacia los angulos maximos de movimiento
+      de la torretay pasar el punto de contacto con el mundo para transladarlo a
+      coordenadas de pantalla\n\nVector3 worldPosition = new Vector3(x, y, z); //
+      La posici\xF3n del punto en el mundo 3D\nCamera mainCamera = Camera.main; //
+      Puedes usar la c\xE1mara principal o cualquier otra c\xE1mara que desees\n\nVector3
+      screenPosition = mainCamera.WorldToScreenPoint(worldPosition);\n\nfloat screenX
+      = screenPosition.x;\nfloat screenY = screenPosition.y;"
+    linkText: 
+    url: 
+    isDone: 0
+  - name: Niebla
+    heading: Niebla
+    text: "*instanciar dos efectos de particulas, uno va a ser visible por el jugador
+      que lo lanze al 50% y el otro por los demas jugadores \n\n*cambiar randalizado
+      segun capas o var que serve para eso"
+    linkText: 
+    url: 
+    isDone: 0
+  isRoot: 1

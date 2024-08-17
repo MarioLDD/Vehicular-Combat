@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using UnityEngine;
 
 namespace ReadmeSystem
@@ -9,6 +10,7 @@ namespace ReadmeSystem
 
         public Texture2D icon;
         public string title;
+        public string fileName;
         public Readme prevReadme;
         public Readme nextReadme;
 
@@ -28,6 +30,8 @@ namespace ReadmeSystem
             [TextArea(5,255)]
             public string text;
             public string linkText, url;
+            [HideInInspector]
+            public bool isDone;
         }
     }
 }

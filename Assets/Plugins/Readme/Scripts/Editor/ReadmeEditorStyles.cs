@@ -13,6 +13,9 @@ public static class ReadmeEditorStyles
 
     public static GUIStyle HeadingStyle { get { return m_HeadingStyle; } }
     private static GUIStyle m_HeadingStyle;
+    public static GUIStyle CheckBox { get { return m_CheckBox; } }
+    private static GUIStyle m_CheckBox;
+
 
     public static GUIStyle BodyStyle { get { return m_BodyStyle; } }
     private static GUIStyle m_BodyStyle;
@@ -34,7 +37,8 @@ public static class ReadmeEditorStyles
 
         m_HeadingStyle = new GUIStyle(m_TitleStyle);
         m_HeadingStyle.fontSize = 18;
-        
+        m_HeadingStyle.stretchWidth = false;
+        m_HeadingStyle.alignment = TextAnchor.MiddleLeft;
 
         m_LinkStyle = new GUIStyle(m_BodyStyle);
         m_LinkStyle.wordWrap = false;

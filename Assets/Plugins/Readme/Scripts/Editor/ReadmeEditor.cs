@@ -4,6 +4,8 @@ using UnityEditor;
 using System.IO;
 using System.Reflection;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System;
 
 namespace ReadmeSystem.Editor
 {
@@ -23,7 +25,8 @@ namespace ReadmeSystem.Editor
                     return "Next";
 
 
-                return readme.nextReadme.title == "" ? "Next" : readme.nextReadme.title;
+                return readme.nextReadme.name;
+
             }
         }
 
@@ -35,7 +38,7 @@ namespace ReadmeSystem.Editor
                     return "Prev";
 
 
-                return readme.prevReadme.title == "" ? "Prev" : readme.prevReadme.title;
+                return readme.prevReadme.name;
             }
         }
 
@@ -65,7 +68,7 @@ namespace ReadmeSystem.Editor
         }
 
 
-        [MenuItem("Tutorial/Show Tutorial Instructions")]
+        [MenuItem("Tools/README")]
         static Readme SelectReadme()
         {
             showInEditMode = false;
@@ -110,6 +113,8 @@ namespace ReadmeSystem.Editor
                 base.OnInspectorGUI();
 
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                GUILayout.BeginHorizontal();
+                GUILayout.BeginVertical();
                 showInEditMode = EditorGUILayout.Toggle("Show in Edit Mode", showInEditMode);
 
                 EditorGUI.BeginChangeCheck();
@@ -124,7 +129,14 @@ namespace ReadmeSystem.Editor
                         readme.isRoot = true;
                     }
                 }
+                GUILayout.EndVertical();
 
+                if (GUILayout.Button("Clean Seaction", GUILayout.MaxHeight(40)))
+                {
+                    CleanSection(readme);
+                }
+
+                GUILayout.EndHorizontal();
                 if (GUILayout.Button("Update Sections Label"))
                 {
                     ResetSectionsLabel(readme);
@@ -138,8 +150,17 @@ namespace ReadmeSystem.Editor
 
 
             DrawInspectorGUI(readme);
+
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            GUILayout.BeginHorizontal();
+
             showInEditMode = EditorGUILayout.Toggle("Show in Edit Mode", showInEditMode);
+            bool root = IsDoneChecker(readme);
+            if (GUILayout.Button("Generate next", EditorStyles.toolbarButton))
+            {
+                NewRootReadme(readme, root);
+            }
+            GUILayout.EndHorizontal();
             EditorGUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal(EditorStyles.toolbar);
@@ -174,7 +195,14 @@ namespace ReadmeSystem.Editor
             {
 
                 GUILayout.Label(readme.icon, GUILayout.Width(iconWidth), GUILayout.Height(iconWidth));
-                GUILayout.Label(readme.title, ReadmeEditorStyles.TitleStyle, GUILayout.ExpandHeight(true));
+                if (!string.IsNullOrEmpty(readme.title))
+                {
+                    GUILayout.Label(readme.title, ReadmeEditorStyles.TitleStyle, GUILayout.ExpandHeight(true));
+                }
+                else
+                {
+                    GUILayout.Label(readme.fileName, ReadmeEditorStyles.TitleStyle, GUILayout.ExpandHeight(true));
+                }
 
             }
             GUILayout.EndHorizontal();
@@ -190,38 +218,67 @@ namespace ReadmeSystem.Editor
             {
                 if (!string.IsNullOrEmpty(section.heading))
                 {
-                    section.name = "Header -" + section.heading;
+                    section.name =section.heading;
 
+                    GUILayout.BeginHorizontal();
                     GUILayout.Label(section.heading, ReadmeEditorStyles.HeadingStyle);
 
-                    //Add Horizontal Bar
-                    if (section.heading != "") { EditorGUILayout.LabelField("", GUI.skin.horizontalSlider); }
-                }
-                if (!string.IsNullOrEmpty(section.text))
-                {
-                    if (string.IsNullOrEmpty(section.name))
-                        section.name = "Text: " + section.text;
-
-                    GUILayout.Label(section.text, ReadmeEditorStyles.BodyStyle);
-                }
-                if (!string.IsNullOrEmpty(section.linkText))
-                {
-
-                    if (string.IsNullOrEmpty(section.name))
-                        section.name = "Link: " + section.text;
-
-                    if (ReadmeEditorStyles.LinkLabel(new GUIContent(section.linkText)))
+                    // Agregar el checkbox
+                    EditorGUI.BeginChangeCheck();
+                    section.isDone = GUILayout.Toggle(section.isDone, "Done");
+                    if (EditorGUI.EndChangeCheck())
                     {
-                        Application.OpenURL(section.url);
+                        if (section.isDone)
+                        {
+                            Debug.Log($"Section: {section.heading} Is Done");
+                            section.isDone = true;
+                            EditorUtility.SetDirty(readme);
+                        }
+                        else
+                        {
+                            Debug.Log($"Section: {section.heading} Is Undone");
+                            section.isDone = false;
+                            EditorUtility.SetDirty(readme);
+                        }
+                    }
+
+                    GUILayout.EndHorizontal();
+                    if (!section.isDone)
+                    {
+                        //Add Horizontal Bar
+                        if (section.heading != "") { EditorGUILayout.LabelField("", GUI.skin.horizontalSlider); }
                     }
                 }
-                GUILayout.Space(kSpace);
-
-                if (section.name.Length > 20)
+                if (!section.isDone)
                 {
-                    section.name = section.name.Remove(17);
-                    section.name += "...";
+                    if (!string.IsNullOrEmpty(section.text))
+                    {
+                        if (string.IsNullOrEmpty(section.name))
+                            section.name = "Text: " + section.text;
+
+                        GUILayout.Label(section.text, ReadmeEditorStyles.BodyStyle);
+                    }
+                    if (!string.IsNullOrEmpty(section.linkText))
+                    {
+
+                        if (string.IsNullOrEmpty(section.name))
+                            section.name = "Link: " + section.text;
+
+                        if (ReadmeEditorStyles.LinkLabel(new GUIContent(section.linkText)))
+                        {
+                            Application.OpenURL(section.url);
+                        }
+                    }
+
+                    GUILayout.Space(kSpace);
+                    GUILayout.Space(kSpace);
                 }
+                GUILayout.Space(kSpace);
+                //if (section.name.Length > 20)
+                //{
+                //    section.name = section.name.Remove(17);
+                //    section.name += "...";
+                //}
 
             }
         }
@@ -238,7 +295,7 @@ namespace ReadmeSystem.Editor
 
                 if (!string.IsNullOrEmpty(section.heading))
                 {
-                    section.name = "Header -" + section.heading;
+                    section.name =section.heading;
 
                 }
                 if (!string.IsNullOrEmpty(section.text))
@@ -256,11 +313,11 @@ namespace ReadmeSystem.Editor
 
                 }
 
-                if (section.name.Length > 20)
-                {
-                    section.name = section.name.Remove(17);
-                    section.name += "...";
-                }
+                //if (section.name.Length > 20)
+                //{
+                //    section.name = section.name.Remove(17);
+                //    section.name += "...";
+                //}
 
             }
 
@@ -283,11 +340,9 @@ namespace ReadmeSystem.Editor
                 }
             }
 
-
-
-            return results; ;
+            return results;
         }
-        static Readme GetReadmeRoot()
+        public static Readme GetReadmeRoot()
         {
             Readme result = GetAllRootReadme().FirstOrDefault();
             //Ensures that there is only one readme as root.
@@ -306,10 +361,93 @@ namespace ReadmeSystem.Editor
                 readme.isRoot = false;
             }
         }
+
+        public static bool IsDoneChecker(Readme readme)
+        {
+            if (readme == null)
+                return false;
+
+            foreach (var section in readme.sections)
+            {
+                if (!section.isDone)
+                    return false;
+            }
+            return true;
+        }
+
+        public static void CleanSection(Readme readme)
+        {
+            if (readme == null || readme.sections == null)
+                return;
+
+            // Utilizar LINQ para filtrar las secciones que no están "done"
+            readme.sections = readme.sections.Where(section => !section.isDone).ToArray();
+
+            // Marcar el objeto como sucio para que Unity sepa que necesita ser guardado
+            EditorUtility.SetDirty(readme);
+        }
+
+        public static void NewRootReadme(Readme readme, bool root)
+        {
+            string name = NameFormat(readme.name);
+
+            string path = $"Assets/ReadmeFolder/{name}";
+            if (!Directory.Exists("Assets/ReadmeFolder"))
+            {
+                Directory.CreateDirectory("Assets/ReadmeFolder");
+            }
+
+            Readme settings = ScriptableObject.CreateInstance<Readme>();
+            settings.prevReadme = readme;
+            readme.nextReadme = settings;
+            if (root)
+            {
+                readme.isRoot = false;
+                settings.isRoot = true;
+            }
+
+            //int idNumber = int.Parse(readme.id);
+            //idNumber++;
+            //settings.id = idNumber.ToString("D2");
+            settings.fileName = name;
+            //string name = AssetDatabase.GenerateUniqueAssetPath(path);
+            AssetDatabase.CreateAsset(settings, path + ".asset");
+            //settings.fileName = settings.name;
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            EditorUtility.FocusProjectWindow();
+            Selection.activeObject = settings;
+            showInEditMode = true;
+            //Debug.Log("Readme created at " + settings.name);
+
+
+        }
+
+        static string NameFormat(String readmeName)
+        {
+            string pattern = @"^(.+)\((\d{2})\)$";
+
+            Match match = Regex.Match(readmeName, pattern);
+
+            if (match.Success)
+            {
+                string name = match.Groups[1].Value;
+                int number = int.Parse(match.Groups[2].Value);
+
+                number++;
+
+                string newNumber = number.ToString("D2");
+                string result = $"{name}({newNumber})";
+
+                return result;
+            }
+            else
+            {
+                Console.WriteLine("El string no tiene el formato esperado.");
+                return readmeName + "(01)";
+            }
+        }
+
     }
-
-
-
-
 
 }

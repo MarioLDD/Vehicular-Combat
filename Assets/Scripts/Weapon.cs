@@ -259,10 +259,11 @@ public class Weapon : MonoBehaviour
 
 
 
+
         if (isShooting && readyToShoot && currentAmmo > 0)
         {
             bulletsShot = bulletsPerBurst;
-            PerfromShot();
+            PerformShot();
         }
 
 
@@ -271,67 +272,73 @@ public class Weapon : MonoBehaviour
     {
         //Visualizador de apuntado
 
-        //if (Physics.Raycast(aimPoint.position, aimPoint.forward, out rayHitAim))
-        //{
-        //    float distance = Vector3.Distance(aimPoint.position, rayHitAim.point);
-        //    lineRenderer.SetPosition(0, aimPoint.position);//laser
-        //    lineRenderer.SetPosition(1, rayHitAim.point);//laser
-        //}
-        //else
-        //{
-        //    float distance = 100f; // Distancia razonable para el punto de destino
-        //    Vector3 destination = aimPoint.position + aimPoint.forward * distance;
-        //    lineRenderer.SetPosition(0, aimPoint.position);//laser
-        //    lineRenderer.SetPosition(1, destination);//laser
-        //}
+        if (Physics.Raycast(aimPoint.position, aimPoint.forward, out rayHitAim))
+        {
+            float distance = Vector3.Distance(aimPoint.position, rayHitAim.point);
+            lineRenderer.SetPosition(0, aimPoint.position);//laser
+            lineRenderer.SetPosition(1, rayHitAim.point);//laser
+        }
+        else
+        {
+            float distance = 100f; // Distancia razonable para el punto de destino
+            Vector3 destination = aimPoint.position + aimPoint.forward * distance;
+            lineRenderer.SetPosition(0, aimPoint.position);//laser
+            lineRenderer.SetPosition(1, destination);//laser
+        }
     }
 
     
 
     private void GunAiming(Vector2 input)
     {
-
+        // Ajusta la posición del crosshair en la pantalla
         input *= cursorSpeed * Time.deltaTime;
         float clampedX = Mathf.Clamp(crosshair.localPosition.x + input.x, screenMinXWidth, screenMaxXWidth);
         float clampedY = Mathf.Clamp(crosshair.localPosition.y + input.y, screenMinYHeight, screenMaxYHeight);
 
         crosshair.localPosition = new Vector3(clampedX, clampedY);
 
+        // Lanza un rayo desde la cámara a través de la posición del crosshair en la pantalla
         Ray ray = camera.ScreenPointToRay(crosshair.position);
 
         Vector3 gunDirection;
         RaycastHit hit;
-        // Does the ray intersect any objects excluding the player layer
-        if (Physics.Raycast(aimPoint.position, ray.direction, out hit, Mathf.Infinity))
+
+        // Verifica si el rayo impacta en algún objeto en el mundo 3D
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
+            // Calcula la dirección hacia el punto de impacto
             gunDirection = hit.point - transform.position;
         }
         else
         {
-            gunDirection = (ray.origin + ray.direction * 100) - transform.position;
+            // Si no hay impacto, dispara en la dirección del rayo
+            gunDirection = ray.direction;
         }
 
-
+        // Apunta la torreta hacia la dirección calculada
         transform.rotation = Quaternion.LookRotation(gunDirection);
 
+        // Obtiene la rotación actual en euler angles
         Vector3 rot = transform.localRotation.eulerAngles;
         float rotY = rot.y;
         float rotX = rot.x;
 
-        //transform to negative angle if >180
+        // Aplica clamping a la rotación horizontal (Y)
         rotY = (rotY > 180) ? rotY - 360 : rotY;
         rotY = Mathf.Clamp(rotY, horizontalAngleMin, horizontalAngleMax);
-        //transform back to 360 positive value
         rotY = (rotY < 0) ? rotY + 360 : rotY;
 
-        //transform to negative angle if >180
+        // Aplica clamping a la rotación vertical (X)
         rotX = (rotX > 180) ? rotX - 360 : rotX;
         rotX = Mathf.Clamp(rotX, verticalAngleMin, verticalAngleMax);
-        //transform back to 360 positive value
         rotX = (rotX < 0) ? rotX + 360 : rotX;
 
+        // Establece la nueva rotación clamped
         Quaternion localRotation = Quaternion.Euler(rotX, rotY, 0);
         transform.localRotation = localRotation;
+
+
     }
 
 
@@ -353,7 +360,7 @@ public class Weapon : MonoBehaviour
         isShooting = false;
     }
 
-    private void PerfromShot()
+    private void PerformShot()
     {
         readyToShoot = false;
 
@@ -478,7 +485,7 @@ public class Weapon : MonoBehaviour
     private void ResumeBurst()
     {
         readyToShoot = true;
-        PerfromShot();
+        PerformShot();
     }
     private void ResetShot()
     {

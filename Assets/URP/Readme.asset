@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcf7219bab7fe46a1ad266029b2fee19, type: 3}
+  m_Name: Readme
+  m_EditorClassIdentifier: 
+  icon: {fileID: 0}
+  title: Wheel Warriors
+  prevReadme: {fileID: 0}
+  nextReadme: {fileID: 0}
+  sections:
+  - name: Header -Bugs
+    heading: Bugs
+    text: "*fuego no hace da\xF1o\n*el Time.Scaletime queda en cero despues de terminar
+      la partida y no vuelve a la normalidad al rejugar\n*la partida no finaliza
+      si alguno no obtiene puntos"
+    linkText: 
+    url: 
+- name: Header -Cosas a agregar
+    heading: Cosas a agregar
+    text: '*Pequeño retraso para respawnear
+*Esqueleto del auto luego de explosion
+*hacer volar partes del auto'
+    linkText: 
+    url: 
+  - name: Header -Controles
+    heading: Controles
+    text: 'Ver que controles usan juegos del estilo.
+
+      Por ejemplo: Vigilante
+      8, Twisted Metal,  Heavy Metal Machines, Notmycar. Ver si hay mas.'
+    linkText: best-car-combat-games-ever-ranked
+    url: https://www.thegamer.com/best-car-combat-games-ever-ranked/
+  - name: Header -Power Ups
+    heading: Power Ups
+    text: '*ponerle al escudo un tiempo de funcionamiento
+
+      *que se pueda tener
+      un solo power up a la vez
+
+      *que el collider sea mas grande que la caja'
+    linkText: 
+    url: 
+  - name: Header -Mira
+    heading: Mira
+    text: '*crosshair mas visible
+
+      *primero probar con autoapuntado vertical,
+      sino un auto apuntado en cercanias de la mira.
+
+      *que se centre de forma
+      automatica si no hay movimiento
+
+      *ver trigonometria del apuntado porque
+      no dispara donde se encuentra la mira
+probar de tirar raycast hacia los angulos maximos de movimiento de la torretay pasar el punto de contacto con el mundo para transladarlo a coordenadas de pantalla
+Vector3 worldPosition = new Vector3(x, y, z); // La posición del punto en el mundo 3D
+Camera mainCamera = Camera.main; // Puedes usar la cámara principal o cualquier otra cámara que desees
+
+Vector3 screenPosition = mainCamera.WorldToScreenPoint(worldPosition);
+
+float screenX = screenPosition.x;
+float screenY = screenPosition.y;
+
+'
+    linkText: 
+    url: 
+- name: Header -Niebla
+    heading: Niebla
+    text: '*instanciar dos efectos de particulas, uno va a ser visible por el jugador que lo lanze al 50% y el otro por los demas jugadores 
+
+      *cambiar randalizado segun capas o var que serve para eso'
+    linkText: 
+    url: 
+  isRoot: 1
