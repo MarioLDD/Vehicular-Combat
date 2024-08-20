@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using Unity.Burst.CompilerServices;
 
 public enum ControlMode { simple = 1, touch = 2 }
 
@@ -728,10 +729,14 @@ public class BuggyControl : MonoBehaviour
 
                 }
 
-
+                
                 curTorque = powerShift > 0 ? carSetting.shiftPower : carSetting.carPower;
-                carParticles.shiftParticle1.emissionRate = Mathf.Lerp(carParticles.shiftParticle1.emissionRate, powerShift > 0 ? 50 : 0, Time.deltaTime * 10.0f);
-                carParticles.shiftParticle2.emissionRate = Mathf.Lerp(carParticles.shiftParticle2.emissionRate, powerShift > 0 ? 50 : 0, Time.deltaTime * 10.0f);
+
+                var emissiontShiftParticle1 = carParticles.shiftParticle1.emission;
+                emissiontShiftParticle1.rateOverTime = Mathf.Lerp(emissiontShiftParticle1.rateOverTime.constant, powerShift > 0 ? 50 : 0, Time.deltaTime * 10.0f);
+                
+                var emissiontShiftParticle2 = carParticles.shiftParticle2.emission;
+                emissiontShiftParticle2.rateOverTime = Mathf.Lerp(emissiontShiftParticle2.rateOverTime.constant, powerShift > 0 ? 50 : 0, Time.deltaTime * 10.0f);
             }
             else
             {
@@ -748,8 +753,12 @@ public class BuggyControl : MonoBehaviour
 
                 powerShift = Mathf.MoveTowards(powerShift, 100.0f, Time.deltaTime * 5.0f);
                 curTorque = carSetting.carPower;
-                carParticles.shiftParticle1.emissionRate = Mathf.Lerp(carParticles.shiftParticle1.emissionRate, 0, Time.deltaTime * 10.0f);
-                carParticles.shiftParticle2.emissionRate = Mathf.Lerp(carParticles.shiftParticle2.emissionRate, 0, Time.deltaTime * 10.0f);
+
+                var emissiontShiftParticle1 = carParticles.shiftParticle1.emission;
+                emissiontShiftParticle1.rateOverTime = Mathf.Lerp(emissiontShiftParticle1.rateOverTime.constant, 0, Time.deltaTime * 10.0f);
+
+                var emissiontShiftParticle2 = carParticles.shiftParticle2.emission;
+                emissiontShiftParticle2.rateOverTime = Mathf.Lerp(emissiontShiftParticle2.rateOverTime.constant, 0, Time.deltaTime * 10.0f);
             }
 
 
@@ -781,7 +790,7 @@ public class BuggyControl : MonoBehaviour
                     }
 
 
-                    var pc = Particle[currentWheel].GetComponent<ParticleSystem>();
+                    var pc = Particle[currentWheel].GetComponent<ParticleSystem>().emission;
                     bool WGrounded = false;
 
 
@@ -802,8 +811,8 @@ public class BuggyControl : MonoBehaviour
                                 Particle[currentWheel].GetComponent<AudioSource>().clip = carSetting.hitGround[i].groundSound;
                             }
 
-                            Particle[currentWheel].GetComponent<ParticleSystem>().startColor = carSetting.hitGround[i].brakeColor;
-
+                            var main = Particle[currentWheel].GetComponent<ParticleSystem>().main;
+                            main.startColor = carSetting.hitGround[i].brakeColor;
                         }
 
 
@@ -813,7 +822,7 @@ public class BuggyControl : MonoBehaviour
                     if (WGrounded && speed > 5 && !brake)
                     {
 
-                        pc.enableEmission = true;
+                        pc.enabled = true;
 
                         Particle[currentWheel].GetComponent<AudioSource>().volume = 0.5f;
 
@@ -829,7 +838,7 @@ public class BuggyControl : MonoBehaviour
 
                             if (!Particle[currentWheel].GetComponent<AudioSource>().isPlaying)
                                 Particle[currentWheel].GetComponent<AudioSource>().Play();
-                            pc.enableEmission = true;
+                            pc.enabled = true;
                             Particle[currentWheel].GetComponent<AudioSource>().volume = 10;
 
                         }
@@ -838,7 +847,7 @@ public class BuggyControl : MonoBehaviour
                     else
                     {
 
-                        pc.enableEmission = false;
+                        pc.enabled = false;
                         Particle[currentWheel].GetComponent<AudioSource>().volume = Mathf.Lerp(Particle[currentWheel].GetComponent<AudioSource>().volume, 0, Time.deltaTime * 10.0f);
                     }
 
@@ -856,8 +865,8 @@ public class BuggyControl : MonoBehaviour
 
                 if (Particle[currentWheel] != null)
                 {
-                    var pc = Particle[currentWheel].GetComponent<ParticleSystem>();
-                    pc.enableEmission = false;
+                    var pc = Particle[currentWheel].GetComponent<ParticleSystem>().emission;
+                    pc.enabled = false;
                 }
 
 

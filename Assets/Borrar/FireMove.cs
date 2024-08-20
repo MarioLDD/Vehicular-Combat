@@ -14,15 +14,15 @@ public class FireMove : MonoBehaviour
         transform.RotateAround(center.transform.position, Vector3.up, angle * Time.deltaTime);
     }
 
-    void OnParticleCollision(GameObject other)
-    {
-        if (other.TryGetComponentInParents(out HealthSystem healthSystem))
-        {
-            if (healthSystem.gameObject != currentPlayer)
-            {
-                healthSystem.TakeDamage(fireDamage, currentPlayer);
-            }
-        }
-        Debug.Log(other.name);
-    }
+    //void OnParticleCollision(GameObject other)
+    //{
+    //    if (other.TryGetComponentInParents(out HealthSystem healthSystem))
+    //    {
+    //        if (healthSystem.gameObject != currentPlayer)
+    //        {
+    //            healthSystem.TakeDamage(fireDamage, currentPlayer);
+    //        }
+    //    }
+    //    Debug.Log(other.name);
+    //}
 }

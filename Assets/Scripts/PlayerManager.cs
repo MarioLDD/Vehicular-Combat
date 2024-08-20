@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,24 +6,30 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
+
 [RequireComponent(typeof(Rigidbody), typeof(UserInput), typeof(ShieldSystem))]
 [RequireComponent(typeof(HealthSystem), typeof(TimeDisplay), typeof(PlayerInput))]
-[RequireComponent(typeof(FlamesSystem))]
-
 public class PlayerManager : MonoBehaviour
 {
     private Camera cameraPlayer;
     private GameObject player;
     private Weapon weapon;
-    private GameObject flamesPoint;
+    private GameObject flamesPoint;//borrar esta duplicado.
+    [ReadOnly][SerializeField] private PowerUp powerUp;
+    public PowerUp PowerUp { get { return powerUp; } set { powerUp = value; } }
     public Weapon Weapon { get { return weapon; } }
     public GameObject FlamesPoint { get { return flamesPoint; } }
 
+    [SerializeField] private Transform powerUpTrailPosition;
+    public Transform PowerUpTrailPosition { get { return powerUpTrailPosition; } }
+
+    [SerializeField] private Image powerUp_image;
+    [ReadOnly][SerializeField] private bool powerUpIsReady;
 
     [SerializeField] private int score;
     public int Score { get { return score; } set { score = value; } }
     [SerializeField] TMP_Text scoreText;
-    // Start is called before the first frame update
 
     private void Awake()
     {
@@ -51,7 +58,33 @@ public class PlayerManager : MonoBehaviour
         cameraPlayer.transform.SetParent(null);
 
         UpdateScoreText();
+        powerUp_image.enabled = false;
     }
+    public void PreparePowerUp(Sprite powerUp_sprite)
+    {
+        powerUp_image.sprite = powerUp_sprite;
+        powerUp_image.enabled = true;
+        powerUpIsReady = true;
+    }
+
+    public void DisablePowerUp()
+    {
+        if(!powerUpIsReady)
+        {
+            powerUp_image.sprite = null;
+            powerUp = null;
+        }
+    }
+    public void OnPowerUps()
+    {
+        if (powerUpIsReady)
+        {
+            powerUp.Activate();
+            powerUp_image.enabled = false;
+            powerUpIsReady = false;
+        }
+    }
+
     public void WinScore(int addScore)
     {
         score += addScore;
@@ -80,11 +113,11 @@ public class PlayerManager : MonoBehaviour
 
     private void OnEnable()
     {
-        cameraPlayer.gameObject.SetActive(true);
+        //cameraPlayer.gameObject.SetActive(true);
 
     }
     private void OnDisable()
     {
-        cameraPlayer.gameObject.SetActive(false);
+        //cameraPlayer.gameObject.SetActive(false);
     }
 }

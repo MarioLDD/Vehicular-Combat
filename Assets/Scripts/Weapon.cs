@@ -1,9 +1,11 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Burst.Intrinsics;
 using Unity.Mathematics;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.VirtualTexturing;
@@ -13,6 +15,8 @@ using static UnityEngine.LightAnchor;
 
 public class Weapon : MonoBehaviour
 {
+    private GameObject borrar;
+    private Vector3 m_Position = Vector3.zero;
     [SerializeField] private PlayerInput playerInput;
     private InputActionAsset inputAsset;
     private InputActionMap player;
@@ -34,6 +38,8 @@ public class Weapon : MonoBehaviour
     private RaycastHit rayHitB;
     private RaycastHit rayHitAim;
     [SerializeField] private RectTransform crosshair;
+    [SerializeField] private float autoAimAngleThreshold = 5.5f; // Threshold angle for auto-aim
+
     [SerializeField] private int screenMinXWidth;
     [SerializeField] private int screenMaxXWidth;
     [SerializeField] private int screenMinYHeight;
@@ -99,9 +105,22 @@ public class Weapon : MonoBehaviour
     }
     private void Start()
     {
+        SetupScreen();
+        PopulatePlayerList();
+        SetupLineRenderer();
+        ammo_Text.text = currentAmmo.ToString();
+
+        borrar = Instantiate(GameObject.CreatePrimitive(PrimitiveType.Sphere));
+        borrar.GetComponent<Collider>().enabled = false;
+
+    }
+
+    private void SetupScreen()
+    {
         PlayerInputManager playerInputManager = FindAnyObjectByType<PlayerInputManager>();
         var totalPlayer = playerInputManager.playerCount;
         var playerIndex = playerInput.splitScreenIndex;
+
         int screenWidth = Screen.width;
         int screenHeight = Screen.height;
 
@@ -116,7 +135,7 @@ public class Weapon : MonoBehaviour
                 screenMinYHeight = -screenHeight / 2;
                 screenMaxYHeight = screenHeight / 2;
 
-                crosshair.localPosition = new Vector3(screenMinXWidth / 2, 0);
+                //crosshair.localPosition = new Vector3(screenMinXWidth / 2, 0);
             }
             else if (playerIndex == 1)
             {
@@ -126,8 +145,7 @@ public class Weapon : MonoBehaviour
                 screenMinYHeight = -screenHeight / 2;
                 screenMaxYHeight = screenHeight / 2;
 
-                crosshair.localPosition = new Vector3(screenMaxXWidth / 2, 0);
-
+                //crosshair.localPosition = new Vector3(screenMaxXWidth / 2, 0);
             }
         }
         else if (totalPlayer == 4)
@@ -140,7 +158,7 @@ public class Weapon : MonoBehaviour
                 screenMinYHeight = 0;
                 screenMaxYHeight = screenHeight / 2;
 
-                crosshair.localPosition = new Vector3(screenMinXWidth / 2, screenMaxYHeight / 2);
+                //crosshair.localPosition = new Vector3(screenMinXWidth / 2, screenMaxYHeight / 2);
             }
             if (playerIndex == 1)
             {
@@ -150,7 +168,7 @@ public class Weapon : MonoBehaviour
                 screenMinYHeight = 0;
                 screenMaxYHeight = screenHeight / 2;
 
-                crosshair.localPosition = new Vector3(screenMaxXWidth / 2, screenMaxYHeight / 2);
+                //crosshair.localPosition = new Vector3(screenMaxXWidth / 2, screenMaxYHeight / 2);
             }
             if (playerIndex == 2)
             {
@@ -160,7 +178,7 @@ public class Weapon : MonoBehaviour
                 screenMinYHeight = -screenHeight / 2;
                 screenMaxYHeight = 0;
 
-                crosshair.localPosition = new Vector3(screenMinXWidth / 2, screenMinYHeight / 2);
+                //crosshair.localPosition = new Vector3(screenMinXWidth / 2, screenMinYHeight / 2);
             }
             if (playerIndex == 3)
             {
@@ -170,10 +188,13 @@ public class Weapon : MonoBehaviour
                 screenMinYHeight = -screenHeight / 2;
                 screenMaxYHeight = 0;
 
-                crosshair.localPosition = new Vector3(screenMaxXWidth / 2, screenMinYHeight / 2);
+                //crosshair.localPosition = new Vector3(screenMaxXWidth / 2, screenMinYHeight / 2);
             }
         }
+    }
 
+    private void PopulatePlayerList()
+    {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         currentPlayer = gameObject.transform.parent.gameObject;
         foreach (var player in players)
@@ -183,14 +204,17 @@ public class Weapon : MonoBehaviour
                 playerList.Add(player);
             }
         }
+    }
+
+    private void SetupLineRenderer()
+    {
         lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.startColor = Color.red;
         lineRenderer.endColor = Color.red;
         lineRenderer.startWidth = 0.1f;
         lineRenderer.endWidth = 0.1f;
-        ammo_Text.text = currentAmmo.ToString();
-
     }
+
     void Update()
     {
         Vector2 input = Vector2.zero;
@@ -199,63 +223,7 @@ public class Weapon : MonoBehaviour
 
         GunAiming(input);
 
-
-
-
-
-
-        //if (currentPlayer.name == "Player 4") 
-
-
-        ///<summary>
-        ///el siguiente codigo contiene el auto apuntado vertical
-        ///lo desactive para implementar uno manual
-        ///borrar una vez que el autoapuntado manual funcione bien
-        ///</summary>      
-
-        //{
-        //    foreach (var player in playerList)
-        //    {
-        //        RaycastHit hit;
-        //        if (Physics.Raycast(aimPoint.position, aimPoint.forward, out hit))
-        //        {
-        //            if (hit.collider.gameObject == player.gameObject)
-        //            {
-        //                continue;
-        //            }
-        //        }
-        //        Vector3 aimPointForward = aimPoint.transform.forward;
-        //        Vector3 playerDirection = (player.transform.position - aimPoint.transform.position);
-
-        //        Vector3 aimPointForwardProyectY = aimPointForward;
-        //        Vector3 playerDirectionProyectY = playerDirection;
-
-        //        aimPointForwardProyectY.y = 0f;
-        //        playerDirectionProyectY.y = 0f;
-
-        //        aimPointForwardProyectY = aimPointForwardProyectY.normalized;
-        //        playerDirectionProyectY = playerDirectionProyectY.normalized;
-
-        //        float dotAngle = Vector3.Dot(aimPointForwardProyectY, playerDirectionProyectY);
-        //        float angleInDegrees = Mathf.Acos(dotAngle) * Mathf.Rad2Deg;
-        //        if (angleInDegrees <= 5.5f)
-        //        {
-        //            //Debug.Log(player.name + "   " + angleInDegrees);
-        //            float vAngle = Vector3.SignedAngle(playerDirection, aimPointForward, -transform.right);
-        //            //Debug.Log(vAngle);
-        //            Vector3 euler = transform.localRotation.eulerAngles;
-        //            euler.x += vAngle;
-
-        //            euler.x = Mathf.Clamp(euler.x, -30, 7);
-        //            transform.localRotation = Quaternion.Euler(euler);
-        //        }
-        //        else
-        //        {
-        //            transform.localRotation = Quaternion.Euler(1.329f, 0, 0);
-        //        }
-        //    }
-        //}
-
+        //AutoAim();
 
 
 
@@ -268,45 +236,31 @@ public class Weapon : MonoBehaviour
 
 
     }
-    private void FixedUpdate()
+    protected virtual void OnDrawGizmos()
     {
-        //Visualizador de apuntado
-
-        if (Physics.Raycast(aimPoint.position, aimPoint.forward, out rayHitAim))
-        {
-            float distance = Vector3.Distance(aimPoint.position, rayHitAim.point);
-            lineRenderer.SetPosition(0, aimPoint.position);//laser
-            lineRenderer.SetPosition(1, rayHitAim.point);//laser
-        }
-        else
-        {
-            float distance = 100f; // Distancia razonable para el punto de destino
-            Vector3 destination = aimPoint.position + aimPoint.forward * distance;
-            lineRenderer.SetPosition(0, aimPoint.position);//laser
-            lineRenderer.SetPosition(1, destination);//laser
-        }
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(m_Position, 2);
     }
-
-    
 
     private void GunAiming(Vector2 input)
     {
         // Ajusta la posición del crosshair en la pantalla
-        input *= cursorSpeed * Time.deltaTime;
-        float clampedX = Mathf.Clamp(crosshair.localPosition.x + input.x, screenMinXWidth, screenMaxXWidth);
-        float clampedY = Mathf.Clamp(crosshair.localPosition.y + input.y, screenMinYHeight, screenMaxYHeight);
+        //input *= cursorSpeed * Time.deltaTime;
+        //float clampedX = Mathf.Clamp(crosshair.localPosition.x + input.x, screenMinXWidth, screenMaxXWidth);
+        //float clampedY = Mathf.Clamp(crosshair.localPosition.y + input.y, screenMinYHeight, screenMaxYHeight);
 
-        crosshair.localPosition = new Vector3(clampedX, clampedY);
 
         // Lanza un rayo desde la cámara a través de la posición del crosshair en la pantalla
-        Ray ray = camera.ScreenPointToRay(crosshair.position);
-
+        Ray ray =camera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+        
         Vector3 gunDirection;
-        RaycastHit hit;
 
         // Verifica si el rayo impacta en algún objeto en el mundo 3D
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity,11))
         {
+            m_Position = hit.point;
+            borrar.transform.position = m_Position;
+            crosshair.localPosition = camera.WorldToScreenPoint(hit.point); 
             // Calcula la dirección hacia el punto de impacto
             gunDirection = hit.point - transform.position;
         }
@@ -338,17 +292,45 @@ public class Weapon : MonoBehaviour
         Quaternion localRotation = Quaternion.Euler(rotX, rotY, 0);
         transform.localRotation = localRotation;
 
-
     }
 
+    private void AutoAim()
+    {
+        foreach (var player in playerList)
+        {
+            Vector3 directionToPlayer = player.transform.position - transform.position;
+            Vector3 aimDirection = aimPoint.forward;
 
+            float angleToPlayer = Vector3.Angle(aimDirection, directionToPlayer);
 
+            if (angleToPlayer <= 5.5f)
+            {
+                Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+            }
+        }
+    }
 
-
-
-
-
-
+    private void FixedUpdate()
+    {
+        UpdateLineRenderer();
+    }
+    private void UpdateLineRenderer()
+    {
+        if (Physics.Raycast(aimPoint.position, aimPoint.forward, out rayHitAim))
+        {
+            float distance = Vector3.Distance(aimPoint.position, rayHitAim.point);
+            lineRenderer.SetPosition(0, aimPoint.position);//laser
+            lineRenderer.SetPosition(1, rayHitAim.point);//laser
+        }
+        else
+        {
+            float distance = 100f; // Distancia razonable para el punto de destino
+            Vector3 destination = aimPoint.position + aimPoint.forward * distance;
+            lineRenderer.SetPosition(0, aimPoint.position);//laser
+            lineRenderer.SetPosition(1, destination);//laser
+        }
+    }
 
     private void StartShot()
     {
@@ -512,7 +494,6 @@ public class Weapon : MonoBehaviour
         player.FindAction("Fire").started += ctx => StartShot();
         player.FindAction("Fire").canceled += ctx => EndShot();
         player.FindAction("Reload").performed += ctx => Reload();
-
     }
 
     private void OnDisable()
